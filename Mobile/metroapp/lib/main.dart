@@ -1,8 +1,9 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:metroapp/pages/firstlogo.dart';
 // import 'package:metroapp/pages/test.dart';
-import 'package:metroapp/pages/welcome.dart';
+// import 'package:metroapp/pages/welcome.dart';
 
 
 void main() {
@@ -20,7 +21,8 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => const Welcome(),
+        '/': (context) => const Firstlogo(),
+        // '/welcome': (context) => const Welcome(),
         // '/': (context) => const Test(),
         // '/login': (context) => const Login(),
         // '/signup': (context) => const SignUp(),

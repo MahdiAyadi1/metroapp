@@ -20,7 +20,7 @@ class Welcome extends StatelessWidget {
             ),
             centerTitle: true,
           ),
-          drawer: Drawer(
+          endDrawer: Drawer(
             child: ListView(
               padding: EdgeInsets.zero,
               children: [
@@ -83,7 +83,7 @@ class Welcome extends StatelessWidget {
                       child: TextField(
                         decoration: InputDecoration(
                             icon: Icon(
-                              Icons.search,
+                              Icons.tram_sharp,
                               color: Colors.grey[800],
                             ),
                             hintText: "Metro Lign :",
