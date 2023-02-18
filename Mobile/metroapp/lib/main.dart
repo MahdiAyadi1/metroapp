@@ -9,6 +9,7 @@ import 'package:metroapp/pages/firstlogo.dart';
 // import 'package:metroapp/pages/welcome.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:metroapp/pages/login.dart';
+import 'package:metroapp/pages/welcome.dart';
 // import 'package:metroapp/pages/test.dart';
 // import 'package:metroapp/pages/welcome.dart';
 
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
         fontFamily: 'Allfont',
+        // primaryColor: Colors.indigoAccent,
       ),
       initialRoute: '/',
       routes: {
@@ -33,7 +35,7 @@ class MyApp extends StatelessWidget {
         '/findmetro': (context) => const Findmetro(),
         '/login': (context) => const Login(),
         '/emploi': (context) => const Emploi(),
-        // '/signup': (context) => const SignUp(),
+        '/welcome': (context) => const Welcome(),
       },
       debugShowCheckedModeBanner: false,
     );

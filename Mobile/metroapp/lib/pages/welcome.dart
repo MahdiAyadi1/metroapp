@@ -21,23 +21,23 @@ class Welcome extends StatelessWidget {
             centerTitle: true,
           ),
           endDrawer: Drawer(
-            child: Center(
-              child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/login');
-                  },
-                  style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all(Colors.blue[900]),
-                    padding: MaterialStateProperty.all(EdgeInsets.all(30)),
-                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18))),
+            child: ListView(
+              // ignore: prefer_const_literals_to_create_immutables
+              children: [
+                Container(
+                  margin: EdgeInsets.fromLTRB(30, 30, 30, 0),
+                  child: GestureDetector(
+                    onTap: (){Navigator.pushNamed(context, '/login');},
+                    child: Card(
+                      color: Colors.grey[200],
+                      child: ListTile(autofocus: true,
+                      title: Text("Login",style: TextStyle(fontSize: 22,fontWeight: FontWeight.bold,color: Colors.grey[800]),),
+                      trailing: Icon(Icons.login),
+                      ),
+                    ),
                   ),
-                  child: Text(
-                    "Login",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                ),
+                )
+              ],
             )
           ),
           body: ListView(
