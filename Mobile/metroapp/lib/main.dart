@@ -2,10 +2,13 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:metroapp/pages/emploi.dart';
+import 'package:metroapp/pages/find_metro.dart';
 import 'package:metroapp/pages/firstlogo.dart';
 // import 'package:metroapp/pages/test.dart';
 // import 'package:metroapp/pages/welcome.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:metroapp/pages/login.dart';
 // import 'package:metroapp/pages/test.dart';
 // import 'package:metroapp/pages/welcome.dart';
 
@@ -27,9 +30,9 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const Firstlogo(),
-        // '/welcome': (context) => const Welcome(),
-        // '/': (context) => const Test(),
-        // '/login': (context) => const Login(),
+        '/findmetro': (context) => const Findmetro(),
+        '/login': (context) => const Login(),
+        '/emploi': (context) => const Emploi(),
         // '/signup': (context) => const SignUp(),
       },
       debugShowCheckedModeBanner: false,

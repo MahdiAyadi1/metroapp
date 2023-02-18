@@ -21,29 +21,24 @@ class Welcome extends StatelessWidget {
             centerTitle: true,
           ),
           endDrawer: Drawer(
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: [
-                DrawerHeader(
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
+            child: Center(
+              child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/login');
+                  },
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all(Colors.blue[900]),
+                    padding: MaterialStateProperty.all(EdgeInsets.all(30)),
+                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18))),
                   ),
-                  child: Text('Mon application'),
+                  child: Text(
+                    "Login",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
                 ),
-                ListTile(
-                  title: Text('Page 1'),
-                  onTap: () {
-                    // Mettre à jour le contenu de la page
-                  },
-                ),
-                ListTile(
-                  title: Text('Page 2'),
-                  onTap: () {
-                    // Mettre à jour le contenu de la page
-                  },
-                ),
-              ],
-            ),
+            )
           ),
           body: ListView(
             children: [
@@ -91,6 +86,24 @@ class Welcome extends StatelessWidget {
                       ),
                     ),
                     Container(
+                      margin: EdgeInsets.only(bottom: 20),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(66),
+                      ),
+                      width: 350,
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: TextField(
+                        decoration: InputDecoration(
+                            icon: Icon(
+                              Icons.search,
+                              color: Colors.grey[800],
+                            ),
+                            hintText: " Station de départ :",
+                            border: InputBorder.none),
+                      ),
+                    ),
+                    Container(
                       margin: EdgeInsets.only(bottom: 50),
                       decoration: BoxDecoration(
                         color: Colors.grey[200],
@@ -104,7 +117,7 @@ class Welcome extends StatelessWidget {
                               Icons.search,
                               color: Colors.grey[800],
                             ),
-                            hintText: "Metro Station :",
+                            hintText: "Station d'arrivé :",
                             border: InputBorder.none),
                       ),
                     ),
@@ -114,9 +127,12 @@ class Welcome extends StatelessWidget {
               Container(
                 margin: EdgeInsets.symmetric(horizontal: 68),
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/findmetro');
+                  },
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.blue[900]),
+                    backgroundColor:
+                        MaterialStateProperty.all(Colors.blue[900]),
                     padding: MaterialStateProperty.all(EdgeInsets.all(18)),
                     shape: MaterialStateProperty.all(RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(18))),
