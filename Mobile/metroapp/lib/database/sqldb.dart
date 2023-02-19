@@ -24,18 +24,32 @@ class SqlDb{
     return mydb;
   }
 
-  _onUpgrade(Database db, int oldversion, int newversion){
+  _onUpgrade(Database db, int oldversion, int newversion)async{
     print("onUpgrade =====================");
+    await db.execute("ALTER TABLE notes ADD COLUMN color TEXT");
     
   }
 
   _onCreate(Database db, int version) async{
-    await db.execute('''
-    CREATE TABLE "notes" (
-     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-      "note" TEXT NOT NULL,
+    Batch batch = db.batch();
+
+    batch.execute('''
+    CREATE TABLE "ligne" (
+     "num_ligne" INTEGER NOT NULL PRIMARY KEY,
+     "nb_stations" TEXT NOT NULL
     )
     ''');
+    batch.execute('''
+    CREATE TABLE "station" (
+     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+     "nom" TEXT NOT NULL,
+     "coordonne" TEXT NOT NULL,
+     "num_ligne" INTEGER NOT NULL,
+     "num_station" INTEGER NOT NULL,
+     FOREIGN KEY (num_ligne) REFERENCES ligne(num_ligne)
+    )
+    ''');
+    await batch.commit();
     print("onCreate =====================");
   }
 
@@ -61,6 +75,12 @@ class SqlDb{
     Database? mydb = await db;
     int response = await mydb!.rawDelete(sql);
     return response;
+  }
+
+  mydeleteDataBase () async{
+    String databasepath = await getDatabasesPath();
+    String path = join(databasepath, 'wael.db') ;
+    await deleteDatabase(path);
   }
 
 }

@@ -7,6 +7,7 @@ import 'package:metroapp/pages/firstlogo.dart';
 // import 'package:metroapp/pages/test.dart';
 // import 'package:metroapp/pages/welcome.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:metroapp/pages/home.dart';
 import 'package:metroapp/pages/login.dart';
 import 'package:metroapp/pages/welcome.dart';
 // import 'package:metroapp/pages/test.dart';
@@ -30,7 +31,8 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => const Firstlogo(),
+        // '/': (context) => const Firstlogo(),
+        '/': (context) => const Home(),
         '/findmetro': (context) => const Findmetro(),
         '/login': (context) => Login(),
         '/emploi': (context) => const Emploi(),

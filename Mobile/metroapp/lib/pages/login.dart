@@ -12,7 +12,7 @@ class Login extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.blue[900],
+          backgroundColor: Colors.indigoAccent,
           title: Text(
             "Login Page",
             style: TextStyle(
