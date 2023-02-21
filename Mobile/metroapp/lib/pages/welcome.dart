@@ -1,9 +1,20 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import '../database/bdd.dart';
 
-class Welcome extends StatelessWidget {
+class Welcome extends StatefulWidget {
   const Welcome({super.key});
+
+  @override
+  State<Welcome> createState() => _WelcomeState();
+}
+
+class _WelcomeState extends State<Welcome> {
+  String? _selectLigne;
+  String? _selectStationDepart;
+  String? _selectStationArrive;
+  List<String> stationsFiltred = [];
 
   @override
   Widget build(BuildContext context) {
@@ -21,25 +32,33 @@ class Welcome extends StatelessWidget {
             centerTitle: true,
           ),
           endDrawer: Drawer(
-            child: ListView(
-              // ignore: prefer_const_literals_to_create_immutables
-              children: [
-                Container(
-                  margin: EdgeInsets.fromLTRB(30, 30, 30, 0),
-                  child: GestureDetector(
-                    onTap: (){Navigator.pushNamed(context, '/login');},
-                    child: Card(
-                      color: Colors.grey[200],
-                      child: ListTile(autofocus: true,
-                      title: Text("Login",style: TextStyle(fontSize: 22,fontWeight: FontWeight.bold,color: Colors.grey[800]),),
-                      trailing: Icon(Icons.login),
+              child: ListView(
+            // ignore: prefer_const_literals_to_create_immutables
+            children: [
+              Container(
+                margin: EdgeInsets.fromLTRB(30, 30, 30, 0),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/login');
+                  },
+                  child: Card(
+                    color: Colors.grey[200],
+                    child: ListTile(
+                      autofocus: true,
+                      title: Text(
+                        "Login",
+                        style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey[800]),
                       ),
+                      trailing: Icon(Icons.login),
                     ),
                   ),
-                )
-              ],
-            )
-          ),
+                ),
+              )
+            ],
+          )),
           body: ListView(
             children: [
               Padding(
@@ -67,6 +86,7 @@ class Welcome extends StatelessWidget {
                     SizedBox(
                       height: 50,
                     ),
+                    // Text("Choisisser la ligne du métro: "),
                     Container(
                       margin: EdgeInsets.only(bottom: 20),
                       decoration: BoxDecoration(
@@ -75,52 +95,98 @@ class Welcome extends StatelessWidget {
                       ),
                       width: 350,
                       padding: EdgeInsets.symmetric(horizontal: 16),
-                      child: TextField(
-                        decoration: InputDecoration(
-                            icon: Icon(
-                              Icons.tram_sharp,
-                              color: Colors.grey[800],
-                            ),
-                            hintText: "Metro Lign :",
-                            border: InputBorder.none),
+                      child: DropdownButton(
+                        //dropdownColor: Colors.grey[200],
+                        itemHeight: 60,
+                        style:
+                            TextStyle(fontSize: 18.5, color: Colors.grey[800]),
+                        isExpanded: true,
+                        items: ligne
+                            .map((e) =>
+                                DropdownMenuItem(value: e, child: Text(e)))
+                            .toList(),
+                        onChanged: (v) {
+                          setState(() {
+                            _selectLigne = v.toString();
+                            stationsFiltred = [];
+                            _selectStationDepart=null;
+                            _selectStationArrive=null;
+                            for (int i = 0; i < station.length; i++) {
+                              if (station[i]["ligne"] == v.toString()) {
+                                stationsFiltred.add(station[i]["name"]);
+                              }
+                            }
+                            // _selectStationDepart = stationsFiltred[0];
+                            // print(stationsFiltred);
+                            // print(selectStation);
+                          });
+                        },
+                        value: _selectLigne,
+                        hint: Text("Choisisser la ligne du métro: "),
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.only(bottom: 20),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(66),
-                      ),
-                      width: 350,
-                      padding: EdgeInsets.symmetric(horizontal: 16),
-                      child: TextField(
-                        decoration: InputDecoration(
-                            icon: Icon(
-                              Icons.search,
-                              color: Colors.grey[800],
-                            ),
-                            hintText: " Station de départ :",
-                            border: InputBorder.none),
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(bottom: 50),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(66),
-                      ),
-                      width: 350,
-                      padding: EdgeInsets.symmetric(horizontal: 16),
-                      child: TextField(
-                        decoration: InputDecoration(
-                            icon: Icon(
-                              Icons.search,
-                              color: Colors.grey[800],
-                            ),
-                            hintText: "Station d'arrivé :",
-                            border: InputBorder.none),
-                      ),
-                    ),
+                        margin: EdgeInsets.only(bottom: 20),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          borderRadius: BorderRadius.circular(66),
+                        ),
+                        width: 350,
+                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        child: DropdownButton<String>(
+                          itemHeight: 60,
+                          style: TextStyle(
+                              fontSize: 18.5, color: Colors.grey[800]),
+                          isExpanded: true,
+                          value: _selectStationDepart,
+                          items: (stationsFiltred.isEmpty
+                                  ? <String>[]
+                                  : stationsFiltred)
+                              .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              _selectStationDepart = value.toString();
+                            });
+                          },
+                          disabledHint: Text('désactivé'),
+                          hint: Text("Choisisser la station de départ"),
+                        )),
+                        Container(
+                        margin: EdgeInsets.only(bottom: 20),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          borderRadius: BorderRadius.circular(66),
+                        ),
+                        width: 350,
+                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        child: DropdownButton<String>(
+                          itemHeight: 60,
+                          style: TextStyle(
+                              fontSize: 18.5, color: Colors.grey[800]),
+                          isExpanded: true,
+                          value: _selectStationArrive,
+                          items: (stationsFiltred.isEmpty
+                                  ? <String>[]
+                                  : stationsFiltred)
+                              .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              _selectStationArrive = value.toString();
+                            });
+                          },
+                          disabledHint: Text('désactivé'),
+                          hint: Text("Choisisser la station de d'arrivée"),
+                        )),
                   ],
                 ),
               ),

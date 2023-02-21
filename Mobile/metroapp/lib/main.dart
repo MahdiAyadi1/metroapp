@@ -31,8 +31,8 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        // '/': (context) => const Firstlogo(),
-        '/': (context) => const Home(),
+        '/': (context) => const Firstlogo(),
+        // '/': (context) => const Home(),
         '/findmetro': (context) => const Findmetro(),
         '/login': (context) => Login(),
         '/emploi': (context) => const Emploi(),
