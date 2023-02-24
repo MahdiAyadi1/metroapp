@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:metroapp/components/myvariables.dart';
 
 class Findmetro extends StatelessWidget {
   const Findmetro({super.key});
@@ -10,7 +11,7 @@ class Findmetro extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-        backgroundColor: Colors.indigoAccent,
+        backgroundColor: MyVariables.mainColor,
         title: Text("Find metro Page",style: TextStyle(
                   fontSize: 28,
                   fontFamily: 'Myfont',

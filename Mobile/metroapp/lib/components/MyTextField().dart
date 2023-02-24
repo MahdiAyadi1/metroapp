@@ -1,6 +1,8 @@
-// ignore_for_file: file_names, prefer_typing_uninitialized_variables
+// ignore_for_file: file_names, prefer_typing_uninitialized_variables, prefer_const_constructors
 
 import 'package:flutter/material.dart';
+
+import 'myvariables.dart';
 
 class MyTextField extends StatelessWidget {
   final controller;
@@ -17,22 +19,28 @@ class MyTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return (Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 25.0),
+    return (Container(
+     margin: EdgeInsets.only(bottom: 20),
+      decoration: BoxDecoration(
+        color: MyVariables.backgroundColor,
+        borderRadius: BorderRadius.circular(66),
+      ),
+      width: 350,
+      padding: EdgeInsets.symmetric(horizontal: 16), 
       child: TextField(
+        style: TextStyle(fontSize: 19),
         controller: controller,
         obscureText: obscureText,
         decoration: InputDecoration(
           prefixIcon: Icon(icon),
           enabledBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.white),
+            borderSide: BorderSide(color: Colors.transparent),
           ),
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.grey.shade400),
+            borderSide: BorderSide(color: Colors.transparent),
           ),
-          fillColor: Colors.grey.shade200,
-          filled: true,
           hintText: hintText,
+          hintStyle: TextStyle(fontSize: 17,fontWeight: FontWeight.w400)
         ),
       ),
     ));

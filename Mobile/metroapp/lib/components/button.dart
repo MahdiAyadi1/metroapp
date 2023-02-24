@@ -1,8 +1,10 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'myvariables.dart';
 
 class Mybutton extends StatelessWidget {
-  final Text text;
+  final String text;
   final void Function()? onPressed;
   const Mybutton({super.key,
   required this.text,
@@ -18,11 +20,14 @@ class Mybutton extends StatelessWidget {
               style: ButtonStyle(
                 backgroundColor:
                     MaterialStateProperty.all(MyVariables.mainColor),
-                padding: MaterialStateProperty.all(EdgeInsets.all(18)),
+                padding: MaterialStateProperty.all(EdgeInsets.fromLTRB(70,25,70,25)),
                 shape: MaterialStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(18))),
               ),
-              child: text,
+              child: Text(
+                    text,
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  ),
             ),
           );
         

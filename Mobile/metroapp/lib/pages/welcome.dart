@@ -45,7 +45,7 @@ class _WelcomeState extends State<Welcome> {
                     Navigator.pushNamed(context, '/login');
                   },
                   child: Card(
-                    color: Colors.grey[200],
+                    color: MyVariables.backgroundColor,
                     child: ListTile(
                       autofocus: true,
                       title: Text(
@@ -53,7 +53,7 @@ class _WelcomeState extends State<Welcome> {
                         style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
-                            color: Colors.grey[800]),
+                            color: MyVariables.textColor),
                       ),
                       trailing: Icon(Icons.login),
                     ),
@@ -75,7 +75,7 @@ class _WelcomeState extends State<Welcome> {
                 ),
               ),
             ),
-            child: ListView(
+            child: Column(
               children: [
                 Padding(
                   padding: const EdgeInsets.only(left: 30),
@@ -108,7 +108,7 @@ class _WelcomeState extends State<Welcome> {
                               .map((e) =>
                                   DropdownMenuItem(value: e, child: Text(e)))
                               .toList(),
-                          OnChange: (v) {
+                          onChange: (v) {
                             setState(() {
                               _selectLigne = v.toString();
                               stationsFiltred = [];
@@ -137,7 +137,7 @@ class _WelcomeState extends State<Welcome> {
                             child: Text(value),
                           );
                         }).toList(),
-                        OnChange: (value) {
+                        onChange: (value) {
                           setState(() {
                             _selectStationDepart = value.toString();
                           });
@@ -155,7 +155,7 @@ class _WelcomeState extends State<Welcome> {
                             child: Text(value),
                           );
                         }).toList(),
-                        OnChange: (value) {
+                        onChange: (value) {
                           setState(() {
                             _selectStationArrive = value.toString();
                           });
@@ -165,10 +165,7 @@ class _WelcomeState extends State<Welcome> {
                   ),
                 ),
                 Mybutton(
-                  text: Text(
-                    "click here",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
+                  text: "click here",
                   onPressed: () {
                     Navigator.pushNamed(context, '/findmetro');
                   },

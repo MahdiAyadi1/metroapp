@@ -1,6 +1,8 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:metroapp/components/button.dart';
+import 'package:metroapp/components/myvariables.dart';
 import '../components/MyTextField().dart';
 
 class Login extends StatelessWidget {
@@ -12,7 +14,7 @@ class Login extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.indigoAccent,
+          backgroundColor: MyVariables.mainColor,
           title: Text(
             "Login Page",
             style: TextStyle(
@@ -31,36 +33,19 @@ class Login extends StatelessWidget {
               hintText: 'Utilisateur',
               obscureText: false,
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 20),
             MyTextField(
               icon: Icons.lock,
               controller: passwordController,
               hintText: 'Mot de passe',
               obscureText: true,
             ),
-            const SizedBox(height: 40),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 25.0),
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
+            SizedBox(height: 40),
+            Mybutton(
+              text: "Se connecter", 
+              onPressed: () {
                     Navigator.pushNamed(context, '/emploi');
-                  },
-                  style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all(Colors.blue[900]),
-                    padding: MaterialStateProperty.all(EdgeInsets.all(18)),
-                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(6))),
-                  ),
-                  child: Text(
-                    "Se connecter",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-            ),
+                  },),
           ],
         ),
       ),
