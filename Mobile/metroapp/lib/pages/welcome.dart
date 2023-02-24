@@ -1,6 +1,9 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:metroapp/components/button.dart';
+import 'package:metroapp/components/inputWelcome.dart';
+import 'package:metroapp/components/myvariables.dart';
 import '../database/bdd.dart';
 
 class Welcome extends StatefulWidget {
@@ -21,12 +24,12 @@ class _WelcomeState extends State<Welcome> {
     return SafeArea(
       child: Scaffold(
           appBar: AppBar(
-            backgroundColor: Colors.indigoAccent,
+            backgroundColor: MyVariables.mainColor,
             title: Text(
               "Book a Metro",
               style: TextStyle(
                   fontSize: 28,
-                  fontFamily: 'Myfont',
+                  fontFamily: MyVariables.titleFont,
                   fontWeight: FontWeight.bold),
             ),
             centerTitle: true,
@@ -67,7 +70,7 @@ class _WelcomeState extends State<Welcome> {
                 ),
                 fit: BoxFit.cover,
                 colorFilter: ColorFilter.mode(
-                  Colors.black.withOpacity(0.4),
+                  Colors.black.withOpacity(0.2),
                   BlendMode.dstATop,
                 ),
               ),
@@ -87,38 +90,25 @@ class _WelcomeState extends State<Welcome> {
                         style: TextStyle(
                             fontSize: 32,
                             fontWeight: FontWeight.bold,
-                            color: Colors.grey[800]),
+                            color: MyVariables.textColor),
                       ),
                       Text(
                         "Where are you headed today?",
                         style: TextStyle(
                             fontSize: 17,
                             fontWeight: FontWeight.bold,
-                            color: Colors.grey[800]),
+                            color: MyVariables.textColor),
                       ),
                       SizedBox(
                         height: 50,
                       ),
                       // Text("Choisisser la ligne du métro: "),
-                      Container(
-                        margin: EdgeInsets.only(bottom: 20),
-                        decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          borderRadius: BorderRadius.circular(66),
-                        ),
-                        width: 350,
-                        padding: EdgeInsets.symmetric(horizontal: 16),
-                        child: DropdownButton(
-                          //dropdownColor: Colors.grey[200],
-                          itemHeight: 60,
-                          style: TextStyle(
-                              fontSize: 18.5, color: Colors.grey[800]),
-                          isExpanded: true,
-                          items: ligne
+                      InputWelcome(
+                          list: ligne
                               .map((e) =>
                                   DropdownMenuItem(value: e, child: Text(e)))
                               .toList(),
-                          onChanged: (v) {
+                          OnChange: (v) {
                             setState(() {
                               _selectLigne = v.toString();
                               stationsFiltred = [];
@@ -129,102 +119,60 @@ class _WelcomeState extends State<Welcome> {
                                   stationsFiltred.add(station[i]["name"]);
                                 }
                               }
-                              // _selectStationDepart = stationsFiltred[0];
+                              // print(_selectLigne);
                               // print(stationsFiltred);
-                              // print(selectStation);
                             });
                           },
-                          value: _selectLigne,
-                          hint: Text("Choisisser la ligne du métro "),
-                        ),
+                          selectLigne: _selectLigne,
+                          hintText: Text("Choisisser la ligne du métro ")),
+                      InputWelcome(
+                        selectLigne: _selectStationDepart,
+                        hintText: Text("Choisisser la station de départ "),
+                        list: (stationsFiltred.isEmpty
+                                ? <String>[]
+                                : stationsFiltred)
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        OnChange: (value) {
+                          setState(() {
+                            _selectStationDepart = value.toString();
+                          });
+                        },
                       ),
-                      Container(
-                          margin: EdgeInsets.only(bottom: 20),
-                          decoration: BoxDecoration(
-                            color: Colors.grey[200],
-                            borderRadius: BorderRadius.circular(66),
-                          ),
-                          width: 350,
-                          padding: EdgeInsets.symmetric(horizontal: 16),
-                          child: DropdownButton<String>(
-                            itemHeight: 60,
-                            style: TextStyle(
-                                fontSize: 18.5, color: Colors.grey[800]),
-                            isExpanded: true,
-                            value: _selectStationDepart,
-                            items: (stationsFiltred.isEmpty
-                                    ? <String>[]
-                                    : stationsFiltred)
-                                .map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                            onChanged: (value) {
-                              setState(() {
-                                _selectStationDepart = value.toString();
-                              });
-                            },
-                            disabledHint:
-                                Text("Choisisser la station de départ"),
-                            hint: Text("Choisisser la station de départ"),
-                          )),
-                      Container(
-                          margin: EdgeInsets.only(bottom: 20),
-                          decoration: BoxDecoration(
-                            color: Colors.grey[200],
-                            borderRadius: BorderRadius.circular(66),
-                          ),
-                          width: 350,
-                          padding: EdgeInsets.symmetric(horizontal: 16),
-                          child: DropdownButton<String>(
-                            itemHeight: 60,
-                            style: TextStyle(
-                                fontSize: 18.5, color: Colors.grey[800]),
-                            isExpanded: true,
-                            value: _selectStationArrive,
-                            items: (stationsFiltred.isEmpty
-                                    ? <String>[]
-                                    : stationsFiltred)
-                                .map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                            onChanged: (value) {
-                              setState(() {
-                                _selectStationArrive = value.toString();
-                              });
-                            },
-                            disabledHint:
-                                Text("Choisisser la station de d'arrivée"),
-                            hint: Text("Choisisser la station de d'arrivée"),
-                          )),
+                      InputWelcome(
+                        selectLigne: _selectStationArrive,
+                        hintText: Text("Choisisser la station de d'arrivée "),
+                        list: (stationsFiltred.isEmpty
+                                ? <String>[]
+                                : stationsFiltred)
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        OnChange: (value) {
+                          setState(() {
+                            _selectStationArrive = value.toString();
+                          });
+                        },
+                      ),
                     ],
                   ),
                 ),
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 68),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/findmetro');
-                    },
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all(Colors.blue[900]),
-                      padding: MaterialStateProperty.all(EdgeInsets.all(18)),
-                      shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(18))),
-                    ),
-                    child: Text(
-                      "click here",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
+                Mybutton(
+                  text: Text(
+                    "click here",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                ),
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/findmetro');
+                  },
+                )
               ],
             ),
           )),

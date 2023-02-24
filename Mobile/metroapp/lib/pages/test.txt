@@ -1,0 +1,47 @@
+Container(
+                        margin: EdgeInsets.only(bottom: 20),
+                        decoration: BoxDecoration(
+                          color: MyVariables.backgroundColor,
+                          borderRadius: BorderRadius.circular(66),
+                        ),
+                        width: 350,
+                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        child: DropdownButton(
+                          //========================selectLigne=====================
+                          value: _selectLigne,
+                          //========================================================
+
+                          //=========================hintText=======================
+                          hint: Text("Choisisser la ligne du métro "),
+                          //========================================================
+
+                          itemHeight: 60,
+                          style: TextStyle(
+                              fontSize: 18.5, color: MyVariables.textColor),
+                          isExpanded: true,
+                          // =================================list================================
+                          items: ligne
+                              .map((e) =>
+                                  DropdownMenuItem(value: e, child: Text(e)))
+                              .toList(),
+                          //=====================================================================
+                          //===================================OnChang===============================
+                          onChanged: (v) {
+                            setState(() {
+                              _selectLigne = v.toString();
+                              stationsFiltred = [];
+                              _selectStationDepart = null;
+                              _selectStationArrive = null;
+                              for (int i = 0; i < station.length; i++) {
+                                if (station[i]["ligne"] == v.toString()) {
+                                  stationsFiltred.add(station[i]["name"]);
+                                }
+                              }
+                              // _selectStationDepart = stationsFiltred[0];
+                              // print(stationsFiltred);
+                              // print(selectStation);
+                            });
+                          },
+                          //===========================================================================
+                        ),
+                      ),

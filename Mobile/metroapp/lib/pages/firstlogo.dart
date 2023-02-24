@@ -5,6 +5,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:metroapp/pages/welcome.dart';
 
+import '../components/myvariables.dart';
+
 
 class Firstlogo extends StatefulWidget {
   const Firstlogo({super.key});
@@ -24,7 +26,7 @@ class _FirstlogoState extends State<Firstlogo> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.grey[300],
+      color: MyVariables.backgroundColor,
       child: Image.asset('assets/images/logo-removebg-preview.png'),
     );
   }

@@ -21,6 +21,7 @@ Future<void> main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
+  final Color mainColor = Colors.black;
 
   @override
   Widget build(BuildContext context) {
