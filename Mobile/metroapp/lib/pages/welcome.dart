@@ -2,8 +2,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:metroapp/components/button.dart';
-import 'package:metroapp/components/inputWelcome.dart';
+import 'package:metroapp/components/welcomePage/inputWelcome.dart';
 import 'package:metroapp/components/myvariables.dart';
+import '../components/appbar.dart';
+import '../components/welcomePage/drawer_welcome.dart';
+import '../components/welcomePage/myBoxDecoration.dart';
 import '../database/bdd.dart';
 
 class Welcome extends StatefulWidget {
@@ -23,58 +26,10 @@ class _WelcomeState extends State<Welcome> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: MyVariables.mainColor,
-            title: Text(
-              "Book a Metro",
-              style: TextStyle(
-                  fontSize: 28,
-                  fontFamily: MyVariables.titleFont,
-                  fontWeight: FontWeight.bold),
-            ),
-            centerTitle: true,
-          ),
-          endDrawer: Drawer(
-              child: ListView(
-            // ignore: prefer_const_literals_to_create_immutables
-            children: [
-              Container(
-                margin: EdgeInsets.fromLTRB(30, 30, 30, 0),
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, '/login');
-                  },
-                  child: Card(
-                    color: MyVariables.backgroundColor,
-                    child: ListTile(
-                      autofocus: true,
-                      title: Text(
-                        "Login",
-                        style: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: MyVariables.textColor),
-                      ),
-                      trailing: Icon(Icons.login),
-                    ),
-                  ),
-                ),
-              )
-            ],
-          )),
+          appBar: MyAppBar(text: "Book a Metro"),
+          endDrawer: MyWelcomeDrawer(),
           body: Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(
-                  "assets/images/background.jpg",
-                ),
-                fit: BoxFit.cover,
-                colorFilter: ColorFilter.mode(
-                  Colors.black.withOpacity(0.2),
-                  BlendMode.dstATop,
-                ),
-              ),
-            ),
+            decoration: MyBoxDecoration(),
             child: Column(
               children: [
                 Padding(
@@ -123,10 +78,10 @@ class _WelcomeState extends State<Welcome> {
                               // print(stationsFiltred);
                             });
                           },
-                          selectLigne: _selectLigne,
+                          selected: _selectLigne,
                           hintText: Text("Choisisser la ligne du métro ")),
                       InputWelcome(
-                        selectLigne: _selectStationDepart,
+                        selected: _selectStationDepart,
                         hintText: Text("Choisisser la station de départ "),
                         list: (stationsFiltred.isEmpty
                                 ? <String>[]
@@ -144,7 +99,7 @@ class _WelcomeState extends State<Welcome> {
                         },
                       ),
                       InputWelcome(
-                        selectLigne: _selectStationArrive,
+                        selected: _selectStationArrive,
                         hintText: Text("Choisisser la station de d'arrivée "),
                         list: (stationsFiltred.isEmpty
                                 ? <String>[]
@@ -176,3 +131,7 @@ class _WelcomeState extends State<Welcome> {
     );
   }
 }
+
+
+
+

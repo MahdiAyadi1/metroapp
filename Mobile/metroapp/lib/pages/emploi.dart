@@ -1,6 +1,9 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:metroapp/components/myvariables.dart';
+
+import '../components/appbar.dart';
 
 class Emploi extends StatelessWidget {
   const Emploi({super.key});
@@ -14,6 +17,7 @@ class Emploi extends StatelessWidget {
               // ignore: prefer_const_literals_to_create_immutables
               children: [
                 UserAccountsDrawerHeader(
+                  decoration: BoxDecoration(color: MyVariables.secondColor),
                   currentAccountPicture: CircleAvatar(
                     backgroundImage: AssetImage('assets/images/person.jpg'),
                   ),
@@ -25,7 +29,7 @@ class Emploi extends StatelessWidget {
                   child: GestureDetector(
                     onTap: (){Navigator.pushNamed(context, '/welcome');},
                     child: Card(
-                      color: Colors.grey[200],
+                      color: MyVariables.backgroundColor,
                       child: ListTile(autofocus: true,
                       title: Text("Log out",style: TextStyle(fontSize: 22,fontWeight: FontWeight.bold,color: Colors.grey[800]),),
                       trailing: Icon(Icons.logout),
@@ -36,15 +40,7 @@ class Emploi extends StatelessWidget {
               ],
             ),
             ),
-        appBar: AppBar(
-        backgroundColor: Colors.indigoAccent,
-        title: Text("Emploi Page",style: TextStyle(
-                  fontSize: 28,
-                  fontFamily: 'Myfont',
-                  fontWeight: FontWeight.bold),),
-        centerTitle: true,
-
-        ),
+        appBar: MyAppBar(text: "Emploi Page"),
         body: Text("Emploi Page")
       ),
     );

@@ -7,7 +7,7 @@ import 'package:metroapp/pages/firstlogo.dart';
 // import 'package:metroapp/pages/test.dart';
 // import 'package:metroapp/pages/welcome.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:metroapp/pages/home.dart';
+import 'package:metroapp/database/sqflite/home.dart';
 import 'package:metroapp/pages/login.dart';
 import 'package:metroapp/pages/welcome.dart';
 // import 'package:metroapp/pages/test.dart';

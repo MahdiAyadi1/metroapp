@@ -1,7 +1,7 @@
 // ignore_for_file: avoid_unnecessary_containers, prefer_const_constructors, avoid_print, unused_local_variable
 
 import 'package:flutter/material.dart';
-import 'package:metroapp/database/sqldb.dart';
+import 'package:metroapp/database/sqflite/sqldb.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});

@@ -2,18 +2,18 @@
 
 import 'package:flutter/material.dart';
 
-import 'myvariables.dart';
+import '../myvariables.dart';
 
 class InputWelcome extends StatelessWidget {
   final List<DropdownMenuItem<String>>? list;
   final void Function(Object?)? onChange;
-  final String? selectLigne;
+  final String? selected;
   final Text? hintText;
   const InputWelcome(
       {super.key,
       required this.list,
       required this.onChange,
-      required this.selectLigne,
+      required this.selected,
       required this.hintText,
       });
 
@@ -30,7 +30,7 @@ class InputWelcome extends StatelessWidget {
       child: DropdownButton(
         
         //dropdownColor: Colors.grey[200],
-        value: selectLigne,
+        value: selected,
         hint: hintText,
         itemHeight: 60,
         style: TextStyle(fontSize: 18.5, color: MyVariables.textColor),

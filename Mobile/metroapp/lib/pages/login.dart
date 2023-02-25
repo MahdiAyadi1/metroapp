@@ -3,7 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:metroapp/components/button.dart';
 import 'package:metroapp/components/myvariables.dart';
-import '../components/MyTextField().dart';
+import '../components/appbar.dart';
+import '../components/myTextField.dart';
 
 class Login extends StatelessWidget {
   Login({super.key});
@@ -13,17 +14,7 @@ class Login extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: MyVariables.mainColor,
-          title: Text(
-            "Login Page",
-            style: TextStyle(
-                fontSize: 28,
-                fontFamily: 'Myfont',
-                fontWeight: FontWeight.bold),
-          ),
-          centerTitle: true,
-        ),
+        appBar: MyAppBar(text: "Login"),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
