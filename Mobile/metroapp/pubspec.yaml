@@ -38,6 +38,7 @@ dependencies:
   firebase_core: ^2.6.1
   firebase: ^9.0.3
   sqflite: ^2.2.4+1
+  # flutter_icons: ^1.1.0
 
 dev_dependencies:
   flutter_test:
@@ -83,7 +84,7 @@ flutter:
           # style: italic
     - family: Allfont
       fonts:
-        - asset: assets/fonts/Open_Sans/OpenSans-VariableFont_wdth,wght.ttf
+        - asset: assets/fonts/Inter/static/Inter-Regular.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
   #

@@ -28,7 +28,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
         fontFamily: 'Allfont',
-        // primaryColor: Colors.indigoAccent,
       ),
       initialRoute: '/',
       routes: {

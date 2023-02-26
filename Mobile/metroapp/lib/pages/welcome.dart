@@ -8,6 +8,7 @@ import '../components/appbar.dart';
 import '../components/welcomePage/drawer_welcome.dart';
 import '../components/welcomePage/myBoxDecoration.dart';
 import '../database/bdd.dart';
+// import 'package:flutter_icons/flutter_icons.dart';
 
 class Welcome extends StatefulWidget {
   const Welcome({super.key});
@@ -21,6 +22,7 @@ class _WelcomeState extends State<Welcome> {
   String? _selectStationDepart;
   String? _selectStationArrive;
   List<String> stationsFiltred = [];
+
 
   @override
   Widget build(BuildContext context) {
@@ -57,11 +59,12 @@ class _WelcomeState extends State<Welcome> {
                       SizedBox(
                         height: 50,
                       ),
+                      
                       // Text("Choisisser la ligne du métro: "),
                       InputWelcome(
                           list: ligne
                               .map((e) =>
-                                  DropdownMenuItem(value: e, child: Text(e)))
+                                  DropdownMenuItem(value: e, child: Text(e,style: TextStyle(fontSize: 20))))
                               .toList(),
                           onChange: (v) {
                             setState(() {
@@ -69,6 +72,8 @@ class _WelcomeState extends State<Welcome> {
                               stationsFiltred = [];
                               _selectStationDepart = null;
                               _selectStationArrive = null;
+                              stationsFiltred
+                                  .add("Station la plus proche",);
                               for (int i = 0; i < station.length; i++) {
                                 if (station[i]["ligne"] == v.toString()) {
                                   stationsFiltred.add(station[i]["name"]);
@@ -89,7 +94,13 @@ class _WelcomeState extends State<Welcome> {
                             .map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
-                            child: Text(value),
+                            child: value == "Station la plus proche" ? 
+                            ListTile(
+                              horizontalTitleGap: 0,
+                              leading: Icon(Icons.location_on_outlined,size: 30,),
+                              title: Text(value,style: TextStyle(fontSize: 20),),
+                              iconColor: MyVariables.secondColor,
+                            ) : Text(value,style: TextStyle(fontSize: 20)),
                           );
                         }).toList(),
                         onChange: (value) {
@@ -103,11 +114,11 @@ class _WelcomeState extends State<Welcome> {
                         hintText: Text("Choisisser la station de d'arrivée "),
                         list: (stationsFiltred.isEmpty
                                 ? <String>[]
-                                : stationsFiltred)
+                                : stationsFiltred.sublist(1, stationsFiltred.length))
                             .map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
-                            child: Text(value),
+                            child: Text(value,style: TextStyle(fontSize: 20)),
                           );
                         }).toList(),
                         onChange: (value) {
@@ -120,9 +131,12 @@ class _WelcomeState extends State<Welcome> {
                   ),
                 ),
                 Mybutton(
-                  text: "click here",
+                  text: "Find Metro",
                   onPressed: () {
-                    Navigator.pushNamed(context, '/findmetro');
+                    ((_selectStationDepart == null) ||
+                            (_selectStationArrive == null))
+                        ? null
+                        : Navigator.pushNamed(context, '/findmetro');
                   },
                 )
               ],
@@ -131,7 +145,3 @@ class _WelcomeState extends State<Welcome> {
     );
   }
 }
-
-
-
-
