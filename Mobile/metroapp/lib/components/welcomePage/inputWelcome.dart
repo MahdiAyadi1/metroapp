@@ -20,12 +20,12 @@ class InputWelcome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom: 20),
+      margin: EdgeInsets.only(bottom: 45),
       decoration: BoxDecoration(
         color: MyVariables.backgroundColor,
         borderRadius: BorderRadius.circular(66),
       ),
-      width: 350,
+      width: 352,
       padding: EdgeInsets.symmetric(horizontal: 16),
       child: DropdownButton(
         

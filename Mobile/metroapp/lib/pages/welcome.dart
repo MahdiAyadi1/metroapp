@@ -20,7 +20,7 @@ class Welcome extends StatefulWidget {
 class _WelcomeState extends State<Welcome> {
   String? _selectLigne;
   String? _selectStationDepart;
-  String? _selectStationArrive;
+  // String? _selectStationArrive;
   List<String> stationsFiltred = [];
 
 
@@ -40,7 +40,7 @@ class _WelcomeState extends State<Welcome> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(
-                        height: 50,
+                        height: 60,
                       ),
                       Text(
                         "Hello There!",
@@ -57,7 +57,7 @@ class _WelcomeState extends State<Welcome> {
                             color: MyVariables.textColor),
                       ),
                       SizedBox(
-                        height: 50,
+                        height: 48,
                       ),
                       
                       // Text("Choisisser la ligne du métro: "),
@@ -70,10 +70,10 @@ class _WelcomeState extends State<Welcome> {
                             setState(() {
                               _selectLigne = v.toString();
                               stationsFiltred = [];
-                              _selectStationDepart = null;
-                              _selectStationArrive = null;
+                              _selectStationDepart = "Plus proche de ma position";
+                              // _selectStationArrive = null;
                               stationsFiltred
-                                  .add("Station la plus proche",);
+                                  .add("Plus proche de ma position",);
                               for (int i = 0; i < station.length; i++) {
                                 if (station[i]["ligne"] == v.toString()) {
                                   stationsFiltred.add(station[i]["name"]);
@@ -84,7 +84,8 @@ class _WelcomeState extends State<Welcome> {
                             });
                           },
                           selected: _selectLigne,
-                          hintText: Text("Choisisser la ligne du métro ")),
+                          hintText: Text("Choisisser la ligne du métro ")
+                          ),
                       InputWelcome(
                         selected: _selectStationDepart,
                         hintText: Text("Choisisser la station de départ "),
@@ -94,13 +95,16 @@ class _WelcomeState extends State<Welcome> {
                             .map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
-                            child: value == "Station la plus proche" ? 
+                            child: value == "Plus proche de ma position" ? 
                             ListTile(
+                              // tileColor: Colors.blue[100],
                               horizontalTitleGap: 0,
-                              leading: Icon(Icons.location_on_outlined,size: 30,),
-                              title: Text(value,style: TextStyle(fontSize: 20),),
+                              contentPadding: EdgeInsets.zero,
+                              leading: Icon(Icons.location_on,size: 35,),
+                              title: Text(value,style: TextStyle(fontSize: 20,color: Colors.blue[900]),),
                               iconColor: MyVariables.secondColor,
-                            ) : Text(value,style: TextStyle(fontSize: 20)),
+                            ) : 
+                            Text(value,style: TextStyle(fontSize: 20))
                           );
                         }).toList(),
                         onChange: (value) {
@@ -109,32 +113,34 @@ class _WelcomeState extends State<Welcome> {
                           });
                         },
                       ),
-                      InputWelcome(
-                        selected: _selectStationArrive,
-                        hintText: Text("Choisisser la station de d'arrivée "),
-                        list: (stationsFiltred.isEmpty
-                                ? <String>[]
-                                : stationsFiltred.sublist(1, stationsFiltred.length))
-                            .map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value,style: TextStyle(fontSize: 20)),
-                          );
-                        }).toList(),
-                        onChange: (value) {
-                          setState(() {
-                            _selectStationArrive = value.toString();
-                          });
-                        },
-                      ),
+                      // InputWelcome(
+                      //   selected: _selectStationArrive,
+                      //   hintText: Text("Choisisser la station de d'arrivée "),
+                      //   list: (stationsFiltred.isEmpty
+                      //           ? <String>[]
+                      //           : stationsFiltred.sublist(1, stationsFiltred.length))
+                      //       .map<DropdownMenuItem<String>>((String value) {
+                      //     return DropdownMenuItem<String>(
+                      //       value: value,
+                      //       child: Text(value,style: TextStyle(fontSize: 20)),
+                      //     );
+                      //   }).toList(),
+                      //   onChange: (value) {
+                      //     setState(() {
+                      //       _selectStationArrive = value.toString();
+                      //     });
+                      //   },
+                      // ),
                     ],
                   ),
                 ),
                 Mybutton(
                   text: "Find Metro",
                   onPressed: () {
-                    ((_selectStationDepart == null) ||
-                            (_selectStationArrive == null))
+                    ((_selectStationDepart == null)
+                    //  ||
+                    //  (_selectStationArrive == null)
+                     )
                         ? null
                         : Navigator.pushNamed(context, '/findmetro');
                   },

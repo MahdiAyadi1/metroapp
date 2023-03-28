@@ -37,7 +37,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   firebase_core: ^2.6.1
   firebase: ^9.0.3
-  sqflite: ^2.2.4+1
+  mysql1: ^0.20.0
   # flutter_icons: ^1.1.0
 
 dev_dependencies:

@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:metroapp/components/button.dart';
-import 'package:metroapp/components/myvariables.dart';
 import '../components/appbar.dart';
 import '../components/myTextField.dart';
 

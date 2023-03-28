@@ -11,7 +11,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  SqlDb sqlDB = SqlDb();
+  // SqlDb sqlDB = SqlDb();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,9 +27,9 @@ class _HomeState extends State<Home> {
                 textColor: Colors.white,
                 child: Text("Insert Data",style: TextStyle(fontSize: 25),),
                 onPressed: () async{
-                  int response = await sqlDB.insertData(
-                    "INSERT INTO 'ligne' ('num_ligne','nb_stations') VALUES (1,11)");
-                    print(response);
+                  // int response = await sqlDB.insertData(
+                  //   "INSERT INTO 'ligne' ('num_ligne','nb_stations') VALUES (1,11)");
+                    // print(response);
                 },),
             ),
             SizedBox(height: 30,),
@@ -39,8 +39,8 @@ class _HomeState extends State<Home> {
                 textColor: Colors.white,
                 child: Text("Read Data",style: TextStyle(fontSize: 25),),
                 onPressed: () async{
-                  List<Map> response = await sqlDB.readData("Select * FROM 'ligne'");
-                  print(response);
+                  // List<Map> response = await sqlDB.readData("Select * FROM 'ligne'");
+                  // print(response);
                   
                 },),
             ),
@@ -51,7 +51,7 @@ class _HomeState extends State<Home> {
                 textColor: Colors.white,
                 child: Text("Delet DataBase",style: TextStyle(fontSize: 25),),
                 onPressed: () async{
-                  await sqlDB.mydeleteDataBase();
+                  // await sqlDB.mydeleteDataBase();
                   print("Database Deleted");
                   
                 },),
