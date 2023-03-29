@@ -29,6 +29,13 @@ class _WelcomeState extends State<Welcome> {
     return SafeArea(
       child: Scaffold(
           appBar: MyAppBar(text: "Book a Metro"),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              Navigator.pushNamed(context, '/login');
+            },
+            child: Icon(Icons.directions_subway),
+            backgroundColor: MyVariables.mainColor,
+          ),
           endDrawer: MyWelcomeDrawer(),
           body: Container(
             decoration: MyBoxDecoration(),
