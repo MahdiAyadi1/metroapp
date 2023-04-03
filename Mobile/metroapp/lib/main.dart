@@ -10,6 +10,7 @@ import 'package:firebase_core/firebase_core.dart';
 // import 'package:metroapp/database/sqflite/home.dart';
 import 'package:metroapp/pages/login.dart';
 import 'package:metroapp/pages/retard.dart';
+import 'package:metroapp/pages/test.dart';
 import 'package:metroapp/pages/welcome.dart';
 import 'database/mysql/connexion.dart';
 // import 'package:metroapp/pages/test.dart';
@@ -57,6 +58,7 @@ class MyApp extends StatelessWidget {
         '/emploi': (context) => const Emploi(),
         '/welcome': (context) => const Welcome(),
         '/retard': (context) => Retard(),
+        // '/test': (context) => Test(),
       },
       debugShowCheckedModeBanner: false,
     );
