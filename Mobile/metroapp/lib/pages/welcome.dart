@@ -8,6 +8,8 @@ import '../components/appbar.dart';
 import '../components/welcomePage/drawer_welcome.dart';
 import '../components/welcomePage/myBoxDecoration.dart';
 import '../database/bdd.dart';
+import 'findMetroTest.dart';
+import 'find_metro_UsingState.dart';
 // import 'package:flutter_icons/flutter_icons.dart';
 
 class Welcome extends StatefulWidget {
@@ -18,10 +20,11 @@ class Welcome extends StatefulWidget {
 }
 
 class _WelcomeState extends State<Welcome> {
-  String? _selectLigne;
-  String? _selectStationDepart;
+  String? selectLigne;
+  String? selectStationDepart;
   // String? _selectStationArrive;
   List<String> stationsFiltred = [];
+  List<Map> stationsFiltredMap = [];
 
 
   @override
@@ -33,8 +36,8 @@ class _WelcomeState extends State<Welcome> {
             onPressed: () {
               Navigator.pushNamed(context, '/login');
             },
-            child: Icon(Icons.directions_subway),
             backgroundColor: MyVariables.mainColor,
+            child: Icon(Icons.directions_subway),
           ),
           endDrawer: MyWelcomeDrawer(),
           body: Container(
@@ -75,26 +78,33 @@ class _WelcomeState extends State<Welcome> {
                               .toList(),
                           onChange: (v) {
                             setState(() {
-                              _selectLigne = v.toString();
+                              selectLigne = v.toString();
                               stationsFiltred = [];
-                              _selectStationDepart = "Plus proche de ma position";
+                              stationsFiltredMap = [];
+                              selectStationDepart = "Plus proche de ma position";
                               // _selectStationArrive = null;
                               stationsFiltred
                                   .add("Plus proche de ma position",);
                               for (int i = 0; i < station.length; i++) {
                                 if (station[i]["ligne"] == v.toString()) {
                                   stationsFiltred.add(station[i]["name"]);
+                                  stationsFiltredMap.add(
+                                    {"name":station[i]["name"],
+                                    "coordinates": station[i]['coordinates'],
+                                    }
+                                    );
                                 }
                               }
+                              // print(stationsFiltredMap);
                               // print(_selectLigne);
                               // print(stationsFiltred);
                             });
                           },
-                          selected: _selectLigne,
+                          selected: selectLigne,
                           hintText: Text("Choisisser la ligne du métro ")
                           ),
                       InputWelcome(
-                        selected: _selectStationDepart,
+                        selected: selectStationDepart,
                         hintText: Text("Choisisser la station de départ "),
                         list: (stationsFiltred.isEmpty
                                 ? <String>[]
@@ -116,7 +126,7 @@ class _WelcomeState extends State<Welcome> {
                         }).toList(),
                         onChange: (value) {
                           setState(() {
-                            _selectStationDepart = value.toString();
+                            selectStationDepart = value.toString();
                           });
                         },
                       ),
@@ -144,12 +154,18 @@ class _WelcomeState extends State<Welcome> {
                 Mybutton(
                   text: "Find Metro",
                   onPressed: () {
-                    ((_selectStationDepart == null)
+                    ((selectStationDepart == null)
                     //  ||
                     //  (_selectStationArrive == null)
                      )
                         ? null
-                        : Navigator.pushNamed(context, '/findmetro');
+                        : 
+                        // Navigator.pushNamed(context, '/findmetro');
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context){
+                            return FindmetroTest(selectLigne!,selectStationDepart!,stationsFiltredMap);
+                          })
+                        );
                   },
                 )
               ],

@@ -1,42 +1,58 @@
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:flutter/material.dart';
-// import 'package:cloud_firestore/cloud_firestore.dart';
+// ignore_for_file: prefer_const_constructors, library_private_types_in_public_api
 
-// class ChauffeurListScreen extends StatefulWidget {
-//   @override
-//   _ChauffeurListScreenState createState() => _ChauffeurListScreenState();
-// }
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
-// class _ChauffeurListScreenState extends State<ChauffeurListScreen> {
-//   final CollectionReference chauffeurCollectionRef =
-//       FirebaseFirestore.instance.collection('chauffeur');
-//   List<dynamic> chauffeurList = [];
+class ChauffeurListScreen extends StatefulWidget {
+  const ChauffeurListScreen({super.key});
 
-//   @override
-//   void initState() {
-//     super.initState();
-//     getChauffeurs();
-//   }
+  @override
+  _ChauffeurListScreenState createState() => _ChauffeurListScreenState();
+}
 
-//   Future<void> getChauffeurs() async {
-//     final QuerySnapshot snapshot = await chauffeurCollectionRef.get();
-//     setState(() {
-//       chauffeurList = snapshot.docs.map((doc) => {...doc.data(), 'id': doc.id}).toList();
-//     });
-//   }
+class _ChauffeurListScreenState extends State<ChauffeurListScreen> {
+  final CollectionReference chauffeurCollectionRef =
+      // FirebaseFirestore.instance.collection('chauffeur');
+      FirebaseFirestore.instance.collection('metro_mouvement');
+  List<dynamic> chauffeurList = [];
+  bool isLoading = false;
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: ListView.builder(
-//         itemCount: chauffeurList.length,
-//         itemBuilder: (BuildContext context, int index) {
-//           return ListTile(
-//             title: Text('${chauffeurList[index]['nom']} ${chauffeurList[index]['prenom']}'),
-//             subtitle: Text('${chauffeurList[index]['ville']}'),
-//           );
-//         },
-//       ),
-//     );
-//   }
-// }
+  @override
+  void initState() {
+    super.initState();
+    getChauffeurs();
+  }
+
+  Future<void> getChauffeurs() async {
+    setState(() {
+      isLoading = true;
+    });
+    final QuerySnapshot<Object?> snapshot = await chauffeurCollectionRef.get();
+    final List<Map<String, dynamic>> chauffeurs = snapshot.docs
+        .map<Map<String, dynamic>>((doc) => {...doc.data() as Map<String, dynamic>, 'id': doc.id})
+        .toList();
+    setState(() {
+      chauffeurList = chauffeurs;
+      isLoading = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : ListView.builder(
+              itemCount: chauffeurList.length,
+              itemBuilder: (BuildContext context, int index) {
+                return ListTile(
+                  title: Text('${chauffeurList[index]['id_metro']} ${chauffeurList[index]['ligne']}',style: TextStyle(fontSize: 20)),
+                  subtitle: Text('${chauffeurList[index]['location']}',style: TextStyle(fontSize: 18)),
+                );
+              },
+            ),
+    );
+  }
+}

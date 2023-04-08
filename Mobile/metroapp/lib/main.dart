@@ -1,8 +1,9 @@
 // ignore_for_file: prefer_const_constructors, avoid_print
 
 import 'package:flutter/material.dart';
+import 'package:metroapp/firebase_options.dart';
 import 'package:metroapp/pages/emploi.dart';
-import 'package:metroapp/pages/find_metro.dart';
+import 'package:metroapp/pages/find_metro_UsingState.dart';
 import 'package:metroapp/pages/firstlogo.dart';
 // import 'package:metroapp/pages/test.dart';
 // import 'package:metroapp/pages/welcome.dart';
@@ -18,7 +19,7 @@ import 'database/mysql/connexion.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   //=================================connection MySql===================================
   // print("avant connexion");
   // final conn = await getConnection();
@@ -53,12 +54,12 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const Firstlogo(),
         // '/': (context) => const Home(),
-        '/findmetro': (context) => const Findmetro(),
+        // '/findmetro': (context) => Findmetro(),
         '/login': (context) => Login(),
         '/emploi': (context) => const Emploi(),
         '/welcome': (context) => const Welcome(),
         '/retard': (context) => Retard(),
-        // '/test': (context) => Test(),
+        '/test': (context) => ChauffeurListScreen(),
       },
       debugShowCheckedModeBanner: false,
     );
