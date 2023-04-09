@@ -1,27 +1,69 @@
-// ignore_for_file: prefer_const_constructors, avoid_print, unused_element, unused_field, non_constant_identifier_names
+// ignore_for_file: prefer_const_constructors, avoid_print, unused_element, unused_field, non_constant_identifier_names, prefer_const_literals_to_create_immutables
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:metroapp/components/myvariables.dart';
 import 'package:geolocator/geolocator.dart';
 import '../components/appbar.dart';
+import '../components/FindMetroCard.dart';
 
 class FindmetroTest extends StatefulWidget {
-  String? selectLigne;
-  String? selectStationDepart;
-  List<Map>? stationsFiltredMap;
-  FindmetroTest(String l, String s, List<Map> liste, {super.key}) {
-    selectLigne = l;
-    selectStationDepart = s;
-    stationsFiltredMap = liste;
-  }
+  final String? selectLigne;
+  final String? selectStationDepart;
+  final List<Map> stationsFiltredMap;
+  const FindmetroTest({
+    required this.selectLigne,
+    required this.selectStationDepart,
+    required this.stationsFiltredMap,
+    Key? key,
+  }) : super(key: key);
+  // selectLigne = l;
+  // selectStationDepart = s;
+  // stationsFiltredMap = liste;
 
   @override
   State<FindmetroTest> createState() => _FindmetroTestState();
 }
 
 class _FindmetroTestState extends State<FindmetroTest> {
-  // Position? _position;
+  Position? _position = Position(
+      latitude: 0.0,
+      longitude: 0.0,
+      altitude: 0.0,
+      accuracy: 0.0,
+      speed: 0.0,
+      speedAccuracy: 0.0,
+      timestamp: DateTime.now(),
+      heading: 0.0);
   // List<double>? _coordStationDepart;
+
+  final CollectionReference MetroMouvementCollectionRef =
+      FirebaseFirestore.instance.collection('metro_mouvement');
+  List<dynamic> MetroMouvementList = [];
+  // List<Map<String, dynamic>> MetroMouvementSelectedLigne = [];
+  bool isLoading = true;
+  @override
+  void initState() {
+    super.initState();
+    getMetroMouvements();
+  }
+
+  Future<void> getMetroMouvements() async {
+    setState(() {
+      isLoading = true;
+    });
+    final QuerySnapshot<Object?> snapshot =
+        await MetroMouvementCollectionRef.get();
+    final List<Map<String, dynamic>> MetroMouvements = snapshot.docs
+        .map<Map<String, dynamic>>(
+            (doc) => {...doc.data() as Map<String, dynamic>, 'id': doc.id})
+        .toList();
+    setState(() {
+      MetroMouvementList = MetroMouvements.where((metro) => (metro['ligne']) == widget.selectLigne!.substring(widget.selectLigne!.length - 1)).toList();
+      // print(MetroMouvementList);
+      isLoading = false;
+    });
+  }
 
   Future<double> getPositionAndDistance(
       double latitude, double longitude) async {
@@ -41,8 +83,8 @@ class _FindmetroTestState extends State<FindmetroTest> {
 
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
-      print("localisation: $position");
-
+      _position = position;
+      // print("localisation: $_position");
       double distance = Geolocator.distanceBetween(
         position.latitude,
         position.longitude,
@@ -56,178 +98,131 @@ class _FindmetroTestState extends State<FindmetroTest> {
     }
   }
 
+  String? plusProcheStationName = "";
+
+  Future<double> PlusProcheStationDistance() async {
+    List<Future<Map<String, dynamic>>> distancesFutures = [];
+    Map<String, dynamic> minDistance = {};
+    try {
+      for (var station in widget.stationsFiltredMap) {
+        Future<double> futureDistance = getPositionAndDistance(
+            station["coordinates"][0], station["coordinates"][1]);
+        distancesFutures.add(futureDistance.then((double distance) {
+          return {"name": station["name"], "distance": distance};
+        }));
+      }
+      List<Map<String, dynamic>> distances =
+          await Future.wait(distancesFutures);
+      minDistance = distances.reduce((actuelle, suivante) =>
+          actuelle["distance"] < suivante["distance"] ? actuelle : suivante);
+      // print(minDistance);
+      // print(minDistance["distance"]);
+      plusProcheStationName = minDistance["name"];
+      return minDistance["distance"];
+    } catch (e) {
+      print(e);
+      return -999;
+    }
+  }
+
+  Future<double> SelectedStationDepartDistance() {
+    List<double> coordStationDepart = [];
+    plusProcheStationName = widget.selectStationDepart;
+    for (var map in widget.stationsFiltredMap) {
+      if (map['name'] == widget.selectStationDepart) {
+        coordStationDepart = map['coordinates'];
+      }
+    }
+    return getPositionAndDistance(coordStationDepart[0], coordStationDepart[1]);
+  }
+
+  int DistanceTiTime(double distance, double vitesse) {
+    return (((distance / 1000.0) / (vitesse / 60.0)).round());
+  }
+
   @override
   Widget build(BuildContext context) {
-    String? plusProcheStationName = "";
-
-    Future<double> PlusProcheStationDistance() async {
-      List<Future<Map<String, dynamic>>> distancesFutures = [];
-      Map<String, dynamic> minDistance = {};
-      try {
-        for (var station in widget.stationsFiltredMap!) {
-          Future<double> futureDistance = getPositionAndDistance(
-              station["coordinates"][0], station["coordinates"][1]);
-          distancesFutures.add(futureDistance.then((double distance) {
-            return {"name": station["name"], "distance": distance};
-          }));
-        }
-        List<Map<String, dynamic>> distances =
-            await Future.wait(distancesFutures);
-        minDistance = distances.reduce((actuelle, suivante) =>
-            actuelle["distance"] < suivante["distance"] ? actuelle : suivante);
-        print(minDistance);
-        print(minDistance["distance"]);
-        plusProcheStationName = minDistance["name"];
-        return minDistance["distance"];
-      } catch (e) {
-        print(e);
-        return -999;
-      }
-    }
-
-    Future<double> SelectedStationDepartDistance() {
-      List<double> coordStationDepart = [];
-      plusProcheStationName = widget.selectStationDepart;
-      for (var map in widget.stationsFiltredMap!) {
-        if (map['name'] == widget.selectStationDepart) {
-          coordStationDepart = map['coordinates'];
-        }
-      }
-      for (var map in widget.stationsFiltredMap!) {
-        if (map['name'] == widget.selectStationDepart) {
-          coordStationDepart = map['coordinates'];
-        }
-      }
-      return getPositionAndDistance(
-          coordStationDepart[0], coordStationDepart[1]);
-    }
-
+    // print(widget.selectLigne);
+    // print(
+    //     "==================================BEGIN RENDER==========================================================");
     return SafeArea(
       child: Scaffold(
-          appBar: MyAppBar(text: "Find metro Page"),
-          body: ListView(
-            // ignore: prefer_const_literals_to_create_immutables
-            children: [
-              FutureBuilder<double>(
-                future:
-                    widget.selectStationDepart == 'Plus proche de ma position'
-                        ? PlusProcheStationDistance()
-                        : SelectedStationDepartDistance(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    // print("Snapshot : ${snapshot.data}");
-                    double vitesse = 4.0;
-                    int minutes =
-                        ((snapshot.data! / 1000.0) / (vitesse / 60.0)).round();
-                    return ListTile(
-                      contentPadding: EdgeInsets.fromLTRB(10, 30, 10, 30),
-                      title: Text(
-                        "Votre station : $plusProcheStationName",
-                        style: TextStyle(
-                          fontSize: 21,
-                          fontWeight: FontWeight.w400,
-                          color: MyVariables.secondColor,
-                        ),
+        appBar: MyAppBar(text: "Find metro Page"),
+        body: Column(
+          children: [
+            FutureBuilder<double>(
+              future: widget.selectStationDepart == 'Plus proche de ma position'
+                  ? PlusProcheStationDistance()
+                  : SelectedStationDepartDistance(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  int minutes = DistanceTiTime(snapshot.data!, 4.0);
+                  return ListTile(
+                    contentPadding: EdgeInsets.fromLTRB(10, 15, 10, 13),
+                    title: Text(
+                      "Votre station : $plusProcheStationName",
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w400,
+                        color: MyVariables.secondColor,
                       ),
-                      subtitle: Text(
-                        "Vous arrivez dans $minutes minutes",
-                        style: TextStyle(
-                          fontSize: 21,
-                          fontWeight: FontWeight.w400,
-                          color: MyVariables.secondColor,
-                        ),
-                      ),
-                    );
-                  } else {
-                    return ListTile(
-                      contentPadding: EdgeInsets.fromLTRB(10, 30, 10, 30),
-                      title: Text(
-                        'Calcul de la distance en cours...',
-                        style: TextStyle(
-                          fontSize: 21,
-                          fontWeight: FontWeight.w400,
-                          color: MyVariables.secondColor,
-                        ),
-                      ),
-                      subtitle: Text(
-                        '',
-                        style: TextStyle(
-                          fontSize: 21,
-                          fontWeight: FontWeight.w400,
-                          color: MyVariables.secondColor,
-                        ),
-                      ),
-                    );
-                  }
-                },
-              ),
-              Card(
-                color: Color.lerp(
-                    MyVariables.mainColor, MyVariables.backgroundColor, 0.6),
-                // color: Color.lerp(MyVariables.mainColor, MyVariables.backgroundColor, 0.6),
-
-                // shadowColor: MyVariables.mainColor,
-                child: ListTile(
-                  contentPadding: EdgeInsets.fromLTRB(15, 35, 15, 35),
-                  title: Text(
-                    "Metro 1",
-                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                  ),
-                  trailing: Text("Arrive dans 5 minutes",
+                    ),
+                    subtitle: Text(
+                      "Vous arrivez dans $minutes minutes",
                       style: TextStyle(
                         fontSize: 19,
                         fontWeight: FontWeight.w400,
-                      )),
-                  subtitle: Text(
-                    "Dans 20-Mars",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
-                  ),
-                ),
-              ),
-              Card(
-                color: Color.lerp(
-                    MyVariables.mainColor, MyVariables.backgroundColor, 0.6),
-
-                // shadowColor: MyVariables.mainColor,
-                child: ListTile(
-                  contentPadding: EdgeInsets.fromLTRB(15, 35, 15, 35),
-                  title: Text(
-                    "Metro 2",
-                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                  ),
-                  trailing: Text(
-                    "Arrive dans 10 minutes",
-                    style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),
-                  ),
-                  subtitle: Text(
-                    "Dans Denden",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
-                  ),
-                ),
-              ),
-              Card(
-                color: Color.lerp(
-                    MyVariables.mainColor, MyVariables.backgroundColor, 0.6),
-
-                // shadowColor: MyVariables.mainColor,
-                child: ListTile(
-                  contentPadding: EdgeInsets.fromLTRB(15, 35, 15, 35),
-                  title: Text(
-                    "Metro 3",
-                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                  ),
-                  trailing: Text(
-                    "Arrive dans 25 minutes",
-                    style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),
-                  ),
-                  subtitle: Text(
-                    "Dans Manouba",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
-                  ),
-                ),
-              ),
-            ],
-          )),
+                        color: MyVariables.secondColor,
+                      ),
+                    ),
+                  );
+                } else {
+                  return ListTile(
+                    contentPadding: EdgeInsets.fromLTRB(10, 15, 10, 15),
+                    title: Text(
+                      'Calcul de la distance en cours...',
+                      style: TextStyle(
+                        fontSize: 21,
+                        fontWeight: FontWeight.w400,
+                        color: MyVariables.secondColor,
+                      ),
+                    ),
+                    subtitle: Text(
+                      '',
+                      style: TextStyle(
+                        fontSize: 21,
+                        fontWeight: FontWeight.w400,
+                        color: MyVariables.secondColor,
+                      ),
+                    ),
+                  );
+                }
+              },
+            ),
+            Expanded(
+              child: isLoading
+                  ? Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : ListView.builder(
+                      itemCount: MetroMouvementList.length,
+                      itemBuilder: (BuildContext context, int index) {
+                          double distance = Geolocator.distanceBetween(
+                            MetroMouvementList[index]['location'][0],
+                            MetroMouvementList[index]['location'][1],
+                            _position!.latitude,
+                            _position!.longitude,
+                          );
+                          return FindMetroCard(
+                              idMetro: MetroMouvementList[index]['id_metro'],
+                              temps: DistanceTiTime(distance, 4.0),
+                              location: "Manouba");
+                      }
+                      ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

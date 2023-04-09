@@ -163,7 +163,8 @@ class _WelcomeState extends State<Welcome> {
                         // Navigator.pushNamed(context, '/findmetro');
                         Navigator.of(context).push(
                           MaterialPageRoute(builder: (context){
-                            return FindmetroTest(selectLigne!,selectStationDepart!,stationsFiltredMap);
+                            return FindmetroTest(selectLigne: selectLigne,selectStationDepart: selectStationDepart,stationsFiltredMap: stationsFiltredMap,);
+                            // return FindmetroTest(selectLigne,selectStationDepart,stationsFiltredMap);
                           })
                         );
                   },

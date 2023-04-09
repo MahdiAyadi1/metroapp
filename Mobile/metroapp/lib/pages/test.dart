@@ -1,38 +1,39 @@
-// ignore_for_file: prefer_const_constructors, library_private_types_in_public_api
+// ignore_for_file: prefer_const_constructors, library_private_types_in_public_api, non_constant_identifier_names
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:metroapp/components/appbar.dart';
 
-class ChauffeurListScreen extends StatefulWidget {
-  const ChauffeurListScreen({super.key});
+class MetroMouvement extends StatefulWidget {
+  const MetroMouvement({super.key});
 
   @override
-  _ChauffeurListScreenState createState() => _ChauffeurListScreenState();
+  _MetroMouvementState createState() => _MetroMouvementState();
 }
 
-class _ChauffeurListScreenState extends State<ChauffeurListScreen> {
-  final CollectionReference chauffeurCollectionRef =
+class _MetroMouvementState extends State<MetroMouvement> {
+  final CollectionReference MetroMouvementCollectionRef =
       // FirebaseFirestore.instance.collection('chauffeur');
       FirebaseFirestore.instance.collection('metro_mouvement');
-  List<dynamic> chauffeurList = [];
+  List<dynamic> MetroMouvementList = [];
   bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    getChauffeurs();
+    getMetroMouvements();
   }
 
-  Future<void> getChauffeurs() async {
+  Future<void> getMetroMouvements() async {
     setState(() {
       isLoading = true;
     });
-    final QuerySnapshot<Object?> snapshot = await chauffeurCollectionRef.get();
-    final List<Map<String, dynamic>> chauffeurs = snapshot.docs
+    final QuerySnapshot<Object?> snapshot = await MetroMouvementCollectionRef.get();
+    final List<Map<String, dynamic>> MetroMouvements = snapshot.docs
         .map<Map<String, dynamic>>((doc) => {...doc.data() as Map<String, dynamic>, 'id': doc.id})
         .toList();
     setState(() {
-      chauffeurList = chauffeurs;
+      MetroMouvementList = MetroMouvements;
       isLoading = false;
     });
   }
@@ -40,16 +41,17 @@ class _ChauffeurListScreenState extends State<ChauffeurListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: MyAppBar(text: "Metro Mouvement"),
       body: isLoading
           ? Center(
               child: CircularProgressIndicator(),
             )
           : ListView.builder(
-              itemCount: chauffeurList.length,
+              itemCount: MetroMouvementList.length,
               itemBuilder: (BuildContext context, int index) {
                 return ListTile(
-                  title: Text('${chauffeurList[index]['id_metro']} ${chauffeurList[index]['ligne']}',style: TextStyle(fontSize: 20)),
-                  subtitle: Text('${chauffeurList[index]['location']}',style: TextStyle(fontSize: 18)),
+                  title: Text('${MetroMouvementList[index]['id_metro']} ${MetroMouvementList[index]['ligne']}',style: TextStyle(fontSize: 20)),
+                  subtitle: Text('${MetroMouvementList[index]['location']}',style: TextStyle(fontSize: 18)),
                 );
               },
             ),
