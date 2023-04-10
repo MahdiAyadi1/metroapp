@@ -1,40 +1,57 @@
-// ignore_for_file: prefer_const_constructors, sort_child_properties_last
+// ignore_for_file: prefer_const_constructors, library_private_types_in_public_api, non_constant_identifier_names
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:metroapp/components/myvariables.dart';
-import '../components/chauffeurProfileDrawer.dart';
-import '../components/appbar.dart';
+import 'package:metroapp/components/appbar.dart';
 
-class Emploi extends StatelessWidget {
-  const Emploi({Key? key}) : super(key: key);
+import '../components/chauffeurProfileDrawer.dart';
+import '../components/myvariables.dart';
+
+class Emploi extends StatefulWidget {
+  final String? CIN;
+  const Emploi({
+    required this.CIN,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  _EmploiState createState() => _EmploiState();
+}
+
+class _EmploiState extends State<Emploi> {
+  final CollectionReference ChauffeurCollectionRef =
+      // FirebaseFirestore.instance.collection('chauffeur');
+      FirebaseFirestore.instance.collection('chauffeur');
+  List EventsList = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    getEvents();
+  }
+
+  Future<void> getEvents() async {
+    // setState(() {
+    //   isLoading = true;
+    // });
+    final QuerySnapshot<Object?> snapshot = await ChauffeurCollectionRef.get();
+    final List<Map<String, dynamic>> Chauffeurs = snapshot.docs
+        .map<Map<String, dynamic>>((doc) => {...doc.data() as Map<String, dynamic>, 'id': doc.id})
+        .toList();
+    setState(() {
+      (Chauffeurs.where((chauffeur) => chauffeur["cin"] == widget.CIN).toList())[0]["json"] != null ?
+      EventsList = (Chauffeurs.where((chauffeur) => chauffeur["cin"] == widget.CIN).toList())[0]["json"] : 
+      EventsList = [];
+      isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    List<Map> info = [
-      {
-        "metro": "M_5",
-        "ligne": "4",
-        "horaire": "8h",
-      },
-      {
-        "metro": "M_9",
-        "ligne": "5",
-        "horaire": "11h",
-      },
-      {
-        "metro": "M_7",
-        "ligne": "4",
-        "horaire": "14h",
-      },
-      {
-        "metro": "M_1",
-        "ligne": "3",
-        "horaire": "18h",
-      },
-    ];
-    return SafeArea(
-      child: Scaffold(
-          endDrawer: ChauffeurProfileDrawer(),
+    // print(EventsList);
+    return Scaffold(
+      endDrawer: ChauffeurProfileDrawer(),
           appBar: MyAppBar(text: "Emploi Page"),
           floatingActionButton: FloatingActionButton(
             onPressed: () {
@@ -43,7 +60,11 @@ class Emploi extends StatelessWidget {
             child: Icon(Icons.notification_important),
             backgroundColor: MyVariables.mainColor,
           ),
-          body: Table(
+      body: isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : Table(
             border: TableBorder.all(),
             // ignore: prefer_const_literals_to_create_immutables
             columnWidths: {
@@ -85,7 +106,8 @@ class Emploi extends StatelessWidget {
                   ),
                 ],
               ),
-              for (int i = 0; i < info.length; i++)
+              
+              for (Map event in EventsList)
                 TableRow(
                   // ignore: prefer_const_literals_to_create_immutables
                   children: [
@@ -93,7 +115,7 @@ class Emploi extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Center(
-                          child: Text(info[i]["metro"],
+                          child: Text(event["metro"],
                               style: TextStyle(
                                   color: Colors.blue, fontSize: 20.0)),
                         ),
@@ -101,19 +123,18 @@ class Emploi extends StatelessWidget {
                     ),
                     TableCell(
                       child: Center(
-                          child: Text(info[i]["ligne"],
+                          child: Text(event["line"],
                               style: TextStyle(fontSize: 20.0))),
                     ),
                     TableCell(
                       child: Center(
-                          child: Text(info[i]["horaire"],
+                          child: Text("${event["startTime"]} - ${event["endTime"]}",
                               style: TextStyle(fontSize: 20.0))),
                     ),
                   ],
                 ),
             ],
-          )),
+          )
     );
   }
 }
-

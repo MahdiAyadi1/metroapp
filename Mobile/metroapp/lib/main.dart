@@ -56,7 +56,7 @@ class MyApp extends StatelessWidget {
         // '/': (context) => const Home(),
         // '/findmetro': (context) => Findmetro(),
         '/login': (context) => Login(),
-        '/emploi': (context) => const Emploi(),
+        // '/emploi': (context) => const Emploi(),
         '/welcome': (context) => const Welcome(),
         '/retard': (context) => Retard(),
         '/test': (context) => MetroMouvement(),

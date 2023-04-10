@@ -49,9 +49,9 @@ class _FindmetroTestState extends State<FindmetroTest> {
   }
 
   Future<void> getMetroMouvements() async {
-    setState(() {
-      isLoading = true;
-    });
+    // setState(() {
+    //   isLoading = true;
+    // });
     final QuerySnapshot<Object?> snapshot =
         await MetroMouvementCollectionRef.get();
     final List<Map<String, dynamic>> MetroMouvements = snapshot.docs
@@ -59,8 +59,11 @@ class _FindmetroTestState extends State<FindmetroTest> {
             (doc) => {...doc.data() as Map<String, dynamic>, 'id': doc.id})
         .toList();
     setState(() {
-      MetroMouvementList = MetroMouvements.where((metro) => (metro['ligne']) == widget.selectLigne!.substring(widget.selectLigne!.length - 1)).toList();
-      // print(MetroMouvementList);
+      MetroMouvementList = MetroMouvements.where((metro) =>
+              (metro['ligne']) ==
+              widget.selectLigne!.substring(widget.selectLigne!.length - 1))
+          .toList();
+      // print("MetroMouvementList From Bdd : $MetroMouvementList");
       isLoading = false;
     });
   }
@@ -143,8 +146,9 @@ class _FindmetroTestState extends State<FindmetroTest> {
   @override
   Widget build(BuildContext context) {
     // print(widget.selectLigne);
-    // print(
-    //     "==================================BEGIN RENDER==========================================================");
+//     print(
+// "==================================BEGIN RENDER==========================================================");
+    // print("MetroMouvementList From Bdd : $MetroMouvementList");
     return SafeArea(
       child: Scaffold(
         appBar: MyAppBar(text: "Find metro Page"),
@@ -199,27 +203,38 @@ class _FindmetroTestState extends State<FindmetroTest> {
                 }
               },
             ),
-            Expanded(
-              child: isLoading
-                  ? Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : ListView.builder(
-                      itemCount: MetroMouvementList.length,
-                      itemBuilder: (BuildContext context, int index) {
-                          double distance = Geolocator.distanceBetween(
-                            MetroMouvementList[index]['location'][0],
-                            MetroMouvementList[index]['location'][1],
-                            _position!.latitude,
-                            _position!.longitude,
-                          );
-                          return FindMetroCard(
-                              idMetro: MetroMouvementList[index]['id_metro'],
-                              temps: DistanceTiTime(distance, 4.0),
-                              location: "Manouba");
-                      }
-                      ),
-            ),
+            FutureBuilder<double>(
+                future: getPositionAndDistance(0, 0),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Expanded(
+                      child: isLoading
+                          ? Center(
+                              child: CircularProgressIndicator(),
+                            )
+                          : ListView.builder(
+                              itemCount: MetroMouvementList.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                double distance = Geolocator.distanceBetween(
+                                  MetroMouvementList[index]['location'][0],
+                                  MetroMouvementList[index]['location'][1],
+                                  _position!.latitude,
+                                  _position!.longitude,
+                                );
+                                // print(
+                                //     "distance of ${MetroMouvementList[index]} is : $distance");
+                                // print("localisation: $_position");
+                                return FindMetroCard(
+                                    idMetro: MetroMouvementList[index]
+                                        ['id_metro'],
+                                    temps: DistanceTiTime(distance, 35.0),
+                                    location: "Manouba");
+                              }),
+                    );
+                  } else {
+                    return Text("");
+                  }
+                })
           ],
         ),
       ),
