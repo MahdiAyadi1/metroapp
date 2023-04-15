@@ -20,7 +20,7 @@ class Mybutton extends StatelessWidget {
               style: ButtonStyle(
                 backgroundColor:
                     MaterialStateProperty.all(MyVariables.mainColor),
-                padding: MaterialStateProperty.all(EdgeInsets.fromLTRB(60,25,60,25)),
+                padding: MaterialStateProperty.all(EdgeInsets.fromLTRB(50,25,50,25)),
                 shape: MaterialStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(18))),
               ),

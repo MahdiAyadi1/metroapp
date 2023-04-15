@@ -20,7 +20,7 @@ class _FirstlogoState extends State<Firstlogo> {
   void initState() {
     super.initState();
     Timer(
-      Duration(seconds: 4), 
+      Duration(seconds: 2), 
       () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Welcome())); });
   }
   @override

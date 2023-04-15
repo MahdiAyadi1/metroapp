@@ -35,7 +35,8 @@ class _FindmetroTestState extends State<FindmetroTest> {
       speedAccuracy: 0.0,
       timestamp: DateTime.now(),
       heading: 0.0);
-  // List<double>? _coordStationDepart;
+  String? plusProcheStationName = "";
+  List<double> coordStationDepart = [];
 
   final CollectionReference MetroMouvementCollectionRef =
       FirebaseFirestore.instance.collection('metro_mouvement');
@@ -70,38 +71,33 @@ class _FindmetroTestState extends State<FindmetroTest> {
 
   Future<double> getPositionAndDistance(
       double latitude, double longitude) async {
-    try {
+    // try {
       LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
+      if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) {
+        print("permission denied");
         permission = await Geolocator.requestPermission();
-        if (permission != LocationPermission.whileInUse &&
-            permission != LocationPermission.always) {
-          return -999;
-        }
-      }
-
-      if (permission == LocationPermission.deniedForever) {
-        return -999;
-      }
-
+        // if (permission != LocationPermission.whileInUse &&
+        //     permission != LocationPermission.always) {
+        //   return -999;
+        // }
+      }else{
       Position position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
-      _position = position;
-      // print("localisation: $_position");
+          desiredAccuracy: LocationAccuracy.best);
+          _position = position;
+      }
+      print("localisation: $_position");
       double distance = Geolocator.distanceBetween(
-        position.latitude,
-        position.longitude,
+        _position!.latitude,
+        _position!.longitude,
         latitude,
         longitude,
       );
       return distance;
-    } catch (e) {
-      print(e);
-      return -999;
-    }
+    // } catch (e) {
+    //   print(e);
+    //   return -999;
+    // }
   }
-
-  String? plusProcheStationName = "";
 
   Future<double> PlusProcheStationDistance() async {
     List<Future<Map<String, dynamic>>> distancesFutures = [];
@@ -129,23 +125,26 @@ class _FindmetroTestState extends State<FindmetroTest> {
   }
 
   Future<double> SelectedStationDepartDistance() {
-    List<double> coordStationDepart = [];
     plusProcheStationName = widget.selectStationDepart;
     for (var map in widget.stationsFiltredMap) {
       if (map['name'] == widget.selectStationDepart) {
         coordStationDepart = map['coordinates'];
+        break;
       }
     }
     return getPositionAndDistance(coordStationDepart[0], coordStationDepart[1]);
   }
 
-  int DistanceTiTime(double distance, double vitesse) {
+  int DistanceToTime(double distance, double vitesse) {
     return (((distance / 1000.0) / (vitesse / 60.0)).round());
   }
 
   @override
   Widget build(BuildContext context) {
+    // print("localisation: $_position");
+    // print(widget.selectStationDepart);
     // print(widget.selectLigne);
+    // print(widget.stationsFiltredMap);
 //     print(
 // "==================================BEGIN RENDER==========================================================");
     // print("MetroMouvementList From Bdd : $MetroMouvementList");
@@ -160,7 +159,7 @@ class _FindmetroTestState extends State<FindmetroTest> {
                   : SelectedStationDepartDistance(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  int minutes = DistanceTiTime(snapshot.data!, 4.0);
+                  int minutes = DistanceToTime(snapshot.data!, 4.5);
                   return ListTile(
                     contentPadding: EdgeInsets.fromLTRB(10, 15, 10, 13),
                     title: Text(
@@ -203,6 +202,7 @@ class _FindmetroTestState extends State<FindmetroTest> {
                 }
               },
             ),
+            // widget.selectStationDepart == 'Plus proche de ma position' ?
             FutureBuilder<double>(
                 future: getPositionAndDistance(0, 0),
                 builder: (context, snapshot) {
@@ -218,8 +218,14 @@ class _FindmetroTestState extends State<FindmetroTest> {
                                 double distance = Geolocator.distanceBetween(
                                   MetroMouvementList[index]['location'][0],
                                   MetroMouvementList[index]['location'][1],
-                                  _position!.latitude,
-                                  _position!.longitude,
+                                  widget.selectStationDepart ==
+                                          'Plus proche de ma position'
+                                      ? _position!.latitude
+                                      : coordStationDepart[0],
+                                  widget.selectStationDepart ==
+                                          'Plus proche de ma position'
+                                      ? _position!.longitude
+                                      : coordStationDepart[1],
                                 );
                                 // print(
                                 //     "distance of ${MetroMouvementList[index]} is : $distance");
@@ -227,7 +233,7 @@ class _FindmetroTestState extends State<FindmetroTest> {
                                 return FindMetroCard(
                                     idMetro: MetroMouvementList[index]
                                         ['id_metro'],
-                                    temps: DistanceTiTime(distance, 35.0),
+                                    temps: DistanceToTime(distance, 35.0),
                                     location: "Manouba");
                               }),
                     );

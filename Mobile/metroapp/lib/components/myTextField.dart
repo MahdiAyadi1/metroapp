@@ -20,7 +20,7 @@ class MyTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return (Container(
-     margin: EdgeInsets.only(bottom: 20),
+    //  margin: EdgeInsets.only(bottom: 20),
       decoration: BoxDecoration(
         color: MyVariables.backgroundColor,
         borderRadius: BorderRadius.circular(66),

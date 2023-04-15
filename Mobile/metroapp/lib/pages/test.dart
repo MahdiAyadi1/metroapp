@@ -12,10 +12,10 @@ class MetroMouvement extends StatefulWidget {
 }
 
 class _MetroMouvementState extends State<MetroMouvement> {
+  List<dynamic> MetroMouvementList = [];
   final CollectionReference MetroMouvementCollectionRef =
       // FirebaseFirestore.instance.collection('chauffeur');
       FirebaseFirestore.instance.collection('metro_mouvement');
-  List<dynamic> MetroMouvementList = [];
   bool isLoading = false;
 
   @override

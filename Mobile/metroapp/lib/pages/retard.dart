@@ -15,25 +15,28 @@ class Retard extends StatelessWidget {
       child: Scaffold(
         appBar: MyAppBar(text: "Retard"),
         body: SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(height: 100),
-              TextField(
-                maxLines:
-                    10, // permet à l'utilisateur de saisir plusieurs lignes
-                decoration: InputDecoration(
-                  labelText: 'Ecrivez ici vos causes de retard',
-                  border: OutlineInputBorder(),
+          child: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Column(
+              children: [
+                SizedBox(height: 70),
+                TextField(
+                  maxLines:
+                      10, // permet à l'utilisateur de saisir plusieurs lignes
+                  decoration: InputDecoration(
+                    labelText: 'Ecrivez ici vos causes de retard',
+                    border: OutlineInputBorder(),
+                  ),
                 ),
-              ),
-              SizedBox(height: 40),
-              Mybutton(
-                text: "Envoyer",
-                onPressed: () {
-                  Navigator.pushNamed(context, '/emploi');
-                },
-              ),
-            ],
+                SizedBox(height: 40),
+                Mybutton(
+                  text: "Envoyer",
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/emploi');
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),

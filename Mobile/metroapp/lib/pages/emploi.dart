@@ -8,9 +8,9 @@ import '../components/chauffeurProfileDrawer.dart';
 import '../components/myvariables.dart';
 
 class Emploi extends StatefulWidget {
-  final String? CIN;
+  final String email;
   const Emploi({
-    required this.CIN,
+    required this.email,
     Key? key,
   }) : super(key: key);
 
@@ -24,7 +24,7 @@ class _EmploiState extends State<Emploi> {
       FirebaseFirestore.instance.collection('chauffeur');
   List EventsList = [];
   bool isLoading = true;
-
+  List<List> days = List.generate(7, (_) => []);
   @override
   void initState() {
     super.initState();
@@ -37,104 +37,179 @@ class _EmploiState extends State<Emploi> {
     // });
     final QuerySnapshot<Object?> snapshot = await ChauffeurCollectionRef.get();
     final List<Map<String, dynamic>> Chauffeurs = snapshot.docs
-        .map<Map<String, dynamic>>((doc) => {...doc.data() as Map<String, dynamic>, 'id': doc.id})
+        .map<Map<String, dynamic>>(
+            (doc) => {...doc.data() as Map<String, dynamic>, 'id': doc.id})
         .toList();
     setState(() {
-      (Chauffeurs.where((chauffeur) => chauffeur["cin"] == widget.CIN).toList())[0]["json"] != null ?
-      EventsList = (Chauffeurs.where((chauffeur) => chauffeur["cin"] == widget.CIN).toList())[0]["json"] : 
-      EventsList = [];
+      (Chauffeurs.where((chauffeur) => chauffeur["email"] == widget.email)
+                  .toList())[0]["json"] !=
+              null
+          ? EventsList = (Chauffeurs.where(
+                  (chauffeur) => chauffeur["email"] == widget.email)
+              .toList())[0]["json"]
+          : EventsList = [];
       isLoading = false;
     });
   }
 
+  String Convert(int event) {
+    String result = "";
+    switch (event) {
+      case 0:
+        result = "Dimanche";
+        break;
+      case 1:
+        result = "Lundi";
+        break;
+      case 2:
+        result = "Mardi";
+        break;
+      case 3:
+        result = "Mercredi";
+        break;
+      case 4:
+        result = "Jeudi";
+        break;
+      case 5:
+        result = "Vendredi";
+        break;
+      case 6:
+        result = "Samedi";
+        break;
+    }
+    return result;
+  }
+
+  void getEventsByDay(EventsList){
+    for (var event in EventsList) {
+      (days[int.parse(event["daysOfWeek"])]).add(event);
+    }
+
+  }
+  void TrierByStartTime(List<List> days){
+for (var i = 0; i < days.length; i++) {
+    days[i].sort((a, b) => a['startTime'].compareTo(b['startTime']));
+    days[i] = List.from(days[i]); // réinitialise la liste triée
+  }
+  }
+
   @override
   Widget build(BuildContext context) {
-    // print(EventsList);
+    // print("EventsList=$EventsList");
+    // print(widget.email);
+
+    //Mettre les events dans une List<List> nommé days pour séparer les jours oû days[0] par exemple comporte les events de dimanche
+    getEventsByDay(EventsList);
+    //trier les events de chaque jours(càd de chaque days[i]) par rapport à startTime
+    TrierByStartTime(days);
+    // print("days=$days");
     return Scaffold(
-      endDrawer: ChauffeurProfileDrawer(),
-          appBar: MyAppBar(text: "Emploi Page"),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              Navigator.pushNamed(context, '/test');
-            },
-            child: Icon(Icons.notification_important),
-            backgroundColor: MyVariables.mainColor,
-          ),
-      body: isLoading
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : Table(
-            border: TableBorder.all(),
-            // ignore: prefer_const_literals_to_create_immutables
-            columnWidths: {
-              0: FixedColumnWidth(137.5),
-              1: FixedColumnWidth(137.5),
-              2: FixedColumnWidth(137.5),
-            },
-            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-            children: [
-              TableRow(
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                ),
-                // ignore: prefer_const_literals_to_create_immutables
-                children: [
-                  TableCell(
-                    child: Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Center(
-                        child: Text('Metro',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 23.0)),
-                      ),
-                    ),
-                  ),
-                  TableCell(
-                    child: Center(
-                      child: Text('Ligne',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 23.0)),
-                    ),
-                  ),
-                  TableCell(
-                    child: Center(
-                      child: Text('Horaire',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 23.0)),
-                    ),
-                  ),
-                ],
-              ),
-              
-              for (Map event in EventsList)
-                TableRow(
-                  // ignore: prefer_const_literals_to_create_immutables
+        endDrawer: ChauffeurProfileDrawer(email: widget.email),
+        appBar: MyAppBar(text: "Emploi Page"),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.pushNamed(context, '/retard');
+          },
+          backgroundColor: MyVariables.mainColor,
+          child: Icon(Icons.notification_important),
+        ),
+        body: isLoading
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : Padding(
+                padding: const EdgeInsets.all(3.0),
+                child: ListView(
                   children: [
-                    TableCell(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Center(
-                          child: Text(event["metro"],
-                              style: TextStyle(
-                                  color: Colors.blue, fontSize: 20.0)),
-                        ),
-                      ),
-                    ),
-                    TableCell(
-                      child: Center(
-                          child: Text(event["line"],
-                              style: TextStyle(fontSize: 20.0))),
-                    ),
-                    TableCell(
-                      child: Center(
-                          child: Text("${event["startTime"]} - ${event["endTime"]}",
-                              style: TextStyle(fontSize: 20.0))),
-                    ),
+                    // for(int i =0;i<2;i++){
+                    for (int eventDay = 0; eventDay < days.length; eventDay++)
+                    if(days[eventDay].isNotEmpty)
+                      Column(
+                        children: [
+                          Text(
+                            Convert(eventDay),
+                            style: TextStyle(
+                                color: MyVariables.secondColor,
+                                fontSize: 33,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Table(
+                            border: TableBorder.all(),
+                            // columnWidths: {
+                            //   0: FixedColumnWidth(120),
+                            //   1: FixedColumnWidth(120),
+                            //   2: FixedColumnWidth(138),
+                            // },
+                            defaultVerticalAlignment:
+                                TableCellVerticalAlignment.middle,
+                            children: [
+                              TableRow(
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                ),
+                                // ignore: prefer_const_literals_to_create_immutables
+                                children: [
+                                  TableCell(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(15.0),
+                                      child: Text('Metro',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 23.0),
+                                          textAlign: TextAlign.center),
+                                    ),
+                                  ),
+                                  TableCell(
+                                      child: Text('Ligne',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 23.0),
+                                          textAlign: TextAlign.center)),
+                                  TableCell(
+                                    child: Text('Horaire',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 23.0),
+                                        textAlign: TextAlign.center),
+                                  ),
+                                ],
+                              ),
+                              for (Map event in days[eventDay])
+                                TableRow(
+                                  // ignore: prefer_const_literals_to_create_immutables
+                                  children: [
+                                    TableCell(
+                                      child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Text(event["metro"],
+                                              style: TextStyle(
+                                                  color: Colors.blue,
+                                                  fontSize: 20.0),
+                                              textAlign: TextAlign.center)),
+                                    ),
+                                    TableCell(
+                                        child: Text(event["line"],
+                                            style: TextStyle(fontSize: 20.0),
+                                            textAlign: TextAlign.center)),
+                                    TableCell(
+                                        child: Text(
+                                            "${event["startTime"]} - ${event["endTime"]}",
+                                            style: TextStyle(fontSize: 20.0),
+                                            textAlign: TextAlign.center)),
+                                  ],
+                                ),
+                            ],
+                          ),
+                          Divider(
+                            // height: 0,
+                            color: Colors.grey,
+                            thickness: 1,
+                          )
+                        ],
+                      )
+                    // }
                   ],
                 ),
-            ],
-          )
-    );
+              ));
   }
 }
