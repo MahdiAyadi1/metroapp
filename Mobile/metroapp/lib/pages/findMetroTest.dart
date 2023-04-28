@@ -36,11 +36,13 @@ class _FindmetroTestState extends State<FindmetroTest> {
       timestamp: DateTime.now(),
       heading: 0.0);
   String? plusProcheStationName = "";
-  List<double> coordStationDepart = [];
+  Map stationDepart = {};
 
   final CollectionReference MetroMouvementCollectionRef =
       FirebaseFirestore.instance.collection('metro_mouvement');
   List<dynamic> MetroMouvementList = [];
+  List<dynamic> MetroMouvementListForBarcelone = [];
+  List<dynamic> MetroMouvementListForTerminus = [];
   // List<Map<String, dynamic>> MetroMouvementSelectedLigne = [];
   bool isLoading = true;
   @override
@@ -72,27 +74,29 @@ class _FindmetroTestState extends State<FindmetroTest> {
   Future<double> getPositionAndDistance(
       double latitude, double longitude) async {
     // try {
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) {
-        print("permission denied");
-        permission = await Geolocator.requestPermission();
-        // if (permission != LocationPermission.whileInUse &&
-        //     permission != LocationPermission.always) {
-        //   return -999;
-        // }
-      }else{
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      print("permission denied");
+      permission = await Geolocator.requestPermission();
+      // if (permission != LocationPermission.whileInUse &&
+      //     permission != LocationPermission.always) {
+      //   return -999;
+      // }
+    } else {
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.best);
-          _position = position;
-      }
-      print("localisation: $_position");
-      double distance = Geolocator.distanceBetween(
-        _position!.latitude,
-        _position!.longitude,
-        latitude,
-        longitude,
-      );
-      return distance;
+          print("localisation avec position: $position");
+      _position = position;
+    }
+    print("localisation: $_position");
+    double distance = Geolocator.distanceBetween(
+      _position!.latitude,
+      _position!.longitude,
+      latitude,
+      longitude,
+    );
+    return distance;
     // } catch (e) {
     //   print(e);
     //   return -999;
@@ -117,6 +121,14 @@ class _FindmetroTestState extends State<FindmetroTest> {
       // print(minDistance);
       // print(minDistance["distance"]);
       plusProcheStationName = minDistance["name"];
+      for (var map in widget.stationsFiltredMap) {
+        if (map['name'] == plusProcheStationName) {
+          stationDepart = map;
+          Direction(stationDepart);
+          break;
+        }
+      }
+      // print("minDistance ============================================ $distances");
       return minDistance["distance"];
     } catch (e) {
       print(e);
@@ -128,15 +140,31 @@ class _FindmetroTestState extends State<FindmetroTest> {
     plusProcheStationName = widget.selectStationDepart;
     for (var map in widget.stationsFiltredMap) {
       if (map['name'] == widget.selectStationDepart) {
-        coordStationDepart = map['coordinates'];
+        stationDepart = map;
+        Direction(stationDepart);
         break;
       }
     }
-    return getPositionAndDistance(coordStationDepart[0], coordStationDepart[1]);
+    return getPositionAndDistance(
+        stationDepart['coordinates'][0], stationDepart['coordinates'][1]);
   }
 
   int DistanceToTime(double distance, double vitesse) {
     return (((distance / 1000.0) / (vitesse / 60.0)).round());
+  }
+
+//stationDepartName == plusProcheStationName
+  void Direction(StationDepart) {
+    print("MetroMouvementList====$MetroMouvementList");
+    // print("StationDepart====$StationDepart");
+    MetroMouvementListForBarcelone = MetroMouvementList.where((metro) =>
+        ((metro["direction"] == "centreVille") &&
+            (metro["num"] > StationDepart["num"]))).toList();
+    print("MetroMouvementListForBarcelone====$MetroMouvementListForBarcelone");
+    MetroMouvementListForTerminus = MetroMouvementList.where((metro) =>
+        ((metro["direction"] == "terminus") &&
+            (metro["num"] < StationDepart["num"]))).toList();
+    print("MetroMouvementListForTerminus====$MetroMouvementListForTerminus");
   }
 
   @override
@@ -144,7 +172,7 @@ class _FindmetroTestState extends State<FindmetroTest> {
     // print("localisation: $_position");
     // print(widget.selectStationDepart);
     // print(widget.selectLigne);
-    // print(widget.stationsFiltredMap);
+    // print("=========================================================================${widget.stationsFiltredMap}");
 //     print(
 // "==================================BEGIN RENDER==========================================================");
     // print("MetroMouvementList From Bdd : $MetroMouvementList");
@@ -202,7 +230,7 @@ class _FindmetroTestState extends State<FindmetroTest> {
                 }
               },
             ),
-            // widget.selectStationDepart == 'Plus proche de ma position' ?
+            // Text("data"),
             FutureBuilder<double>(
                 future: getPositionAndDistance(0, 0),
                 builder: (context, snapshot) {
@@ -213,34 +241,72 @@ class _FindmetroTestState extends State<FindmetroTest> {
                               child: CircularProgressIndicator(),
                             )
                           : ListView.builder(
-                              itemCount: MetroMouvementList.length,
+                              itemCount: MetroMouvementListForBarcelone.length +
+                                  MetroMouvementListForTerminus.length,
                               itemBuilder: (BuildContext context, int index) {
-                                double distance = Geolocator.distanceBetween(
-                                  MetroMouvementList[index]['location'][0],
-                                  MetroMouvementList[index]['location'][1],
-                                  widget.selectStationDepart ==
-                                          'Plus proche de ma position'
-                                      ? _position!.latitude
-                                      : coordStationDepart[0],
-                                  widget.selectStationDepart ==
-                                          'Plus proche de ma position'
-                                      ? _position!.longitude
-                                      : coordStationDepart[1],
-                                );
-                                // print(
-                                //     "distance of ${MetroMouvementList[index]} is : $distance");
-                                // print("localisation: $_position");
-                                return FindMetroCard(
-                                    idMetro: MetroMouvementList[index]
-                                        ['id_metro'],
-                                    temps: DistanceToTime(distance, 35.0),
-                                    location: "Manouba");
-                              }),
+                                if (index <
+                                    MetroMouvementListForBarcelone.length) {
+                                  double distance = Geolocator.distanceBetween(
+                                    MetroMouvementListForBarcelone[index]
+                                        ['location'][0],
+                                    MetroMouvementListForBarcelone[index]
+                                        ['location'][1],
+                                    stationDepart['coordinates'][0],
+                                    stationDepart['coordinates'][1],
+                                  );
+                                  print("distance ========== $distance");
+                                  return Column(
+                                    children: [
+                                      // Text("Direction Centre Ville"),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 4.0),
+                                        child: FindMetroCard(
+                                          idMetro:
+                                              MetroMouvementListForBarcelone[
+                                                  index]['id_metro'],
+                                          temps: DistanceToTime(distance, 11.0),
+                                          direction: "Centre Ville",
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                } else {
+                                  int newIndex = index -
+                                      MetroMouvementListForBarcelone.length;
+                                  double distance = Geolocator.distanceBetween(
+                                    MetroMouvementListForTerminus[newIndex]
+                                        ['location'][0],
+                                    MetroMouvementListForTerminus[newIndex]
+                                        ['location'][1],
+                                    stationDepart['coordinates'][0],
+                                    stationDepart['coordinates'][1],
+                                  );
+                                  print("distance ========== $distance");
+                                  return Column(
+                                    children: [
+                                      // Text("Direction Terminus ",style: TextStyle(backgroundColor: Colors.red)),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 4.0),
+                                        child: FindMetroCard(
+                                          idMetro:
+                                              MetroMouvementListForTerminus[
+                                                  newIndex]['id_metro'],
+                                          temps: DistanceToTime(distance, 11.0),
+                                          direction: "Terminus",
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                }
+                              },
+                            ),
                     );
                   } else {
                     return Text("");
                   }
-                })
+                }),
           ],
         ),
       ),

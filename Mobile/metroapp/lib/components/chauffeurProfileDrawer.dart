@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import './myvariables.dart';
 
 class ChauffeurProfileDrawer extends StatefulWidget {
-  final String email;
+  final Map chauffeurMap;
   const ChauffeurProfileDrawer({
-    required this.email,
+    required this.chauffeurMap,
     super.key,
   });
 
@@ -16,32 +16,12 @@ class ChauffeurProfileDrawer extends StatefulWidget {
 }
 
 class _ChauffeurProfileDrawerState extends State<ChauffeurProfileDrawer> {
-  Map chauffeurMap = {};
-  final CollectionReference chauffeurCollectionRef =
-      // FirebaseFirestore.instance.collection('chauffeur');
-      FirebaseFirestore.instance.collection('chauffeur');
-  @override
-  void initState() {
-    super.initState();
-    getChauffeur();
-  }
-
-  Future<void> getChauffeur() async {
-    final QuerySnapshot<Object?> snapshot =
-        await chauffeurCollectionRef.where('email', isEqualTo: widget.email).get();
-    final List<Map<String, dynamic>> chauffeurs = snapshot.docs
-        .map<Map<String, dynamic>>(
-            (doc) => {...doc.data() as Map<String, dynamic>, 'id': doc.id})
-        .toList();
-    setState(() {
-      chauffeurMap = chauffeurs[0];
-    });
-  }
+  
 
   @override
   Widget build(BuildContext context) {
     // print("widget.email: ${widget.email}");
-    print("chauffeurMap : $chauffeurMap");
+    // print("chauffeurMap : $chauffeurMap");
     return Drawer(
         child: ListView(
       // ignore: prefer_const_literals_to_create_immutables
@@ -49,15 +29,19 @@ class _ChauffeurProfileDrawerState extends State<ChauffeurProfileDrawer> {
         UserAccountsDrawerHeader(
             decoration: BoxDecoration(color: MyVariables.secondColor),
             currentAccountPicture: CircleAvatar(
-              backgroundImage: AssetImage('assets/images/person.jpg'),
+              backgroundColor: MyVariables.backgroundColor,
+    child: Icon(
+    Icons.person,
+    size: 50.0, // taille de l'icône
+  ),
             ),
             accountName: Text(
-              "${chauffeurMap["name"]} ${chauffeurMap["lastName"]}",
+              "${widget.chauffeurMap["name"]} ${widget.chauffeurMap["lastName"]}",
               style: TextStyle(fontSize: 18),
             ),
             accountEmail: Text(
               // chauffeurMap["email"],
-              widget.email,
+              widget.chauffeurMap["email"],
               style: TextStyle(fontSize: 18),
             )),
         Container(

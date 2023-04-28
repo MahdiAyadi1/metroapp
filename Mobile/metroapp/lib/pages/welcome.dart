@@ -85,12 +85,13 @@ class _WelcomeState extends State<Welcome> {
                               // _selectStationArrive = null;
                               stationsFiltred
                                   .add("Plus proche de ma position",);
-                              for (int i = 0; i < station.length; i++) {
-                                if (station[i]["ligne"] == v.toString()) {
-                                  stationsFiltred.add(station[i]["name"]);
+                              for (Map singleStation in station) {
+                                if (singleStation["ligne"] == v.toString()) {
+                                  stationsFiltred.add(singleStation["name"]);
                                   stationsFiltredMap.add(
-                                    {"name":station[i]["name"],
-                                    "coordinates": station[i]['coordinates'],
+                                    {"name":singleStation["name"],
+                                    "coordinates": singleStation['coordinates'],
+                                    "num" : singleStation['num']
                                     }
                                     );
                                 }
@@ -160,13 +161,12 @@ class _WelcomeState extends State<Welcome> {
                      )
                         ? null
                         : 
-                        // Navigator.pushNamed(context, '/findmetro');
-                        Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context){
-                            return FindmetroTest(selectLigne: selectLigne,selectStationDepart: selectStationDepart,stationsFiltredMap: stationsFiltredMap,);
-                            // return FindmetroTest(selectLigne,selectStationDepart,stationsFiltredMap);
-                          })
-                        );
+                        Navigator.pushNamed(context, '/test');
+                        // Navigator.of(context).push(
+                        //   MaterialPageRoute(builder: (context){
+                        //     return FindmetroTest(selectLigne: selectLigne,selectStationDepart: selectStationDepart,stationsFiltredMap: stationsFiltredMap,);
+                        //   })
+                        // );
                   },
                 )
               ],

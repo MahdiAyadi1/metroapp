@@ -3,6 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:metroapp/components/appbar.dart';
+import 'package:metroapp/pages/retard.dart';
 
 import '../components/chauffeurProfileDrawer.dart';
 import '../components/myvariables.dart';
@@ -19,23 +20,25 @@ class Emploi extends StatefulWidget {
 }
 
 class _EmploiState extends State<Emploi> {
-  final CollectionReference ChauffeurCollectionRef =
+  final CollectionReference chauffeurCollectionRef =
       // FirebaseFirestore.instance.collection('chauffeur');
       FirebaseFirestore.instance.collection('chauffeur');
   List EventsList = [];
+  Map chauffeurMap = {};
   bool isLoading = true;
   List<List> days = List.generate(7, (_) => []);
   @override
   void initState() {
     super.initState();
     getEvents();
+    getChauffeur();
   }
 
   Future<void> getEvents() async {
     // setState(() {
     //   isLoading = true;
     // });
-    final QuerySnapshot<Object?> snapshot = await ChauffeurCollectionRef.get();
+    final QuerySnapshot<Object?> snapshot = await chauffeurCollectionRef.get();
     final List<Map<String, dynamic>> Chauffeurs = snapshot.docs
         .map<Map<String, dynamic>>(
             (doc) => {...doc.data() as Map<String, dynamic>, 'id': doc.id})
@@ -49,6 +52,19 @@ class _EmploiState extends State<Emploi> {
               .toList())[0]["json"]
           : EventsList = [];
       isLoading = false;
+    });
+  }
+
+  Future<void> getChauffeur() async {
+    final QuerySnapshot<Object?> snapshot = await chauffeurCollectionRef
+        .where('email', isEqualTo: widget.email)
+        .get();
+    final List<Map<String, dynamic>> chauffeurs = snapshot.docs
+        .map<Map<String, dynamic>>(
+            (doc) => {...doc.data() as Map<String, dynamic>, 'id': doc.id})
+        .toList();
+    setState(() {
+      chauffeurMap = chauffeurs[0];
     });
   }
 
@@ -95,6 +111,7 @@ for (var i = 0; i < days.length; i++) {
 
   @override
   Widget build(BuildContext context) {
+    print(chauffeurMap);
     // print("EventsList=$EventsList");
     // print(widget.email);
 
@@ -104,11 +121,13 @@ for (var i = 0; i < days.length; i++) {
     TrierByStartTime(days);
     // print("days=$days");
     return Scaffold(
-        endDrawer: ChauffeurProfileDrawer(email: widget.email),
+        endDrawer: ChauffeurProfileDrawer(chauffeurMap: chauffeurMap),
         appBar: MyAppBar(text: "Emploi Page"),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            Navigator.pushNamed(context, '/retard');
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+        return Retard(chauffeurMap: chauffeurMap);
+      }));
           },
           backgroundColor: MyVariables.mainColor,
           child: Icon(Icons.notification_important),

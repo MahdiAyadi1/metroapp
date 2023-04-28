@@ -86,7 +86,7 @@ class _LoginState extends State<Login> {
             children: [
               SizedBox(height: 60),
               Text(
-                "Espace désigné pour les chauffeurs.",
+                "Espace désigné pour les chauffeurs",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 30,

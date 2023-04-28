@@ -7,12 +7,12 @@ import 'myvariables.dart';
 class FindMetroCard extends StatelessWidget {
   final String idMetro;
   final int temps;
-  final String location;
+  final String direction;
   const FindMetroCard({
      Key? key,
     required this.idMetro,
     required this.temps,
-    required this.location
+    required this.direction
 }): super(key: key);
 
   @override
@@ -34,10 +34,10 @@ class FindMetroCard extends StatelessWidget {
               fontSize: 19,
               fontWeight: FontWeight.w400,
             )),
-        // subtitle: Text(
-        //   "Dans $location",
-        //   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
-        // ),
+        subtitle: Text(
+          "Direction: $direction",
+          style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold,color: MyVariables.mainColor),
+        ),
       ),
     );
   }
