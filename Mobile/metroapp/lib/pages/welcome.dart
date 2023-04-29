@@ -161,12 +161,12 @@ class _WelcomeState extends State<Welcome> {
                      )
                         ? null
                         : 
-                        Navigator.pushNamed(context, '/test');
-                        // Navigator.of(context).push(
-                        //   MaterialPageRoute(builder: (context){
-                        //     return FindmetroTest(selectLigne: selectLigne,selectStationDepart: selectStationDepart,stationsFiltredMap: stationsFiltredMap,);
-                        //   })
-                        // );
+                        // Navigator.pushNamed(context, '/test');
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context){
+                            return FindmetroTest(selectLigne: selectLigne,selectStationDepart: selectStationDepart,stationsFiltredMap: stationsFiltredMap,);
+                          })
+                        );
                   },
                 )
               ],
