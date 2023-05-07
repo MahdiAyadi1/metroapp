@@ -79,7 +79,7 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: MyAppBar(text: "Login"),
+        appBar: MyAppBar(text: "Se connecter"),
         body: SingleChildScrollView(
           child: Column(
             // mainAxisAlignment: MainAxisAlignment.center,
@@ -130,7 +130,7 @@ class _LoginState extends State<Login> {
               ),
               SizedBox(height: 40),
               Mybutton(
-                text: "Se connecter",
+                text: "Connexion",
                 onPressed: () {
                   // print('Email: ${EmailController.text}');
                   // print('Password: ${passwordController.text}');

@@ -122,7 +122,7 @@ for (var i = 0; i < days.length; i++) {
     // print("days=$days");
     return Scaffold(
         endDrawer: ChauffeurProfileDrawer(chauffeurMap: chauffeurMap),
-        appBar: MyAppBar(text: "Emploi Page"),
+        appBar: MyAppBar(text: "Emploi du travail"),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -171,7 +171,7 @@ for (var i = 0; i < days.length; i++) {
                                   TableCell(
                                     child: Padding(
                                       padding: const EdgeInsets.all(15.0),
-                                      child: Text('Metro',
+                                      child: Text('Métro',
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 23.0),
@@ -213,7 +213,7 @@ for (var i = 0; i < days.length; i++) {
                                     TableCell(
                                         child: Text(
                                             "${event["startTime"]} - ${event["endTime"]}",
-                                            style: TextStyle(fontSize: 20.0),
+                                            style: TextStyle(fontSize: 18.5),
                                             textAlign: TextAlign.center)),
                                   ],
                                 ),

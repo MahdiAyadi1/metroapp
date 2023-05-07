@@ -31,7 +31,7 @@ class _WelcomeState extends State<Welcome> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-          appBar: MyAppBar(text: "Book a Metro"),
+          appBar: MyAppBar(text: "Réserver un métro"),
           floatingActionButton: FloatingActionButton(
             onPressed: () {
               Navigator.pushNamed(context, '/login');
@@ -39,7 +39,7 @@ class _WelcomeState extends State<Welcome> {
             backgroundColor: MyVariables.mainColor,
             child: Icon(Icons.directions_subway),
           ),
-          endDrawer: MyWelcomeDrawer(),
+          // endDrawer: MyWelcomeDrawer(),
           body: Container(
             decoration: MyBoxDecoration(),
             child: Column(
@@ -53,14 +53,14 @@ class _WelcomeState extends State<Welcome> {
                         height: 60,
                       ),
                       Text(
-                        "Hello There!",
+                        "Bonjour!",
                         style: TextStyle(
                             fontSize: 32,
                             fontWeight: FontWeight.bold,
                             color: MyVariables.textColor),
                       ),
                       Text(
-                        "Where are you headed today?",
+                        "Où vas-tu aujourd'hui?",
                         style: TextStyle(
                             fontSize: 17,
                             fontWeight: FontWeight.bold,
@@ -102,11 +102,11 @@ class _WelcomeState extends State<Welcome> {
                             });
                           },
                           selected: selectLigne,
-                          hintText: Text("Choisisser la ligne du métro ")
+                          hintText: Text("Choisissez la ligne du métro ")
                           ),
                       InputWelcome(
                         selected: selectStationDepart,
-                        hintText: Text("Choisisser la station de départ "),
+                        hintText: Text("Choisissez la station de départ "),
                         list: (stationsFiltred.isEmpty
                                 ? <String>[]
                                 : stationsFiltred)
@@ -153,7 +153,7 @@ class _WelcomeState extends State<Welcome> {
                   ),
                 ),
                 Mybutton(
-                  text: "Find Metro",
+                  text: "Trouver métro",
                   onPressed: () {
                     ((selectStationDepart == null)
                     //  ||

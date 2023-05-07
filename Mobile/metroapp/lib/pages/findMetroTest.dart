@@ -179,7 +179,7 @@ class _FindmetroTestState extends State<FindmetroTest> {
     // print("MetroMouvementList From Bdd : $MetroMouvementList");
     return SafeArea(
       child: Scaffold(
-        appBar: MyAppBar(text: "Find metro Page"),
+        appBar: MyAppBar(text: "Trouver votre métro"),
         body: Column(
           children: [
             FutureBuilder<double>(
@@ -194,7 +194,7 @@ class _FindmetroTestState extends State<FindmetroTest> {
                     title: Text(
                       "Votre station : $plusProcheStationName",
                       style: TextStyle(
-                        fontSize: 24,
+                        fontSize: 22.5,
                         fontWeight: FontWeight.w400,
                         color: MyVariables.secondColor,
                       ),
@@ -251,10 +251,10 @@ class _FindmetroTestState extends State<FindmetroTest> {
                                           stationDepart['coordinates'][0],
                                           stationDepart['coordinates'][1],
                                         );
-                                      print("distance =================================== $distance");
+                                      print("distance =============================================== $distance");
                                   return FutureBuilder<int>(
                                     future:
-                                        predict([1, 0, "12:00:00", distance, 1, 9]),
+                                        predict([1, 0, "12:00:00", distance, 1, 5]),
                                     builder: (context, snapshot) {
                                       if (snapshot.hasData) {
                                         // double distance =
@@ -279,8 +279,11 @@ class _FindmetroTestState extends State<FindmetroTest> {
                                           ),
                                         );
                                       } else {
-                                        return Center(
-                                          child: CircularProgressIndicator(),
+                                        return Container(
+                                          margin:EdgeInsets.only(bottom: 50),
+                                          child: Center(
+                                            child: CircularProgressIndicator(),
+                                          ),
                                         );
                                       }
                                     },
@@ -297,10 +300,10 @@ class _FindmetroTestState extends State<FindmetroTest> {
                                           stationDepart['coordinates'][0],
                                           stationDepart['coordinates'][1],
                                         );
-                                        print("distance ========== $distance");
+                                        print("distance ============================= $distance");
                                   return FutureBuilder<int>(
                                     future:
-                                        predict([1, 0, "12:00:00", 5990, 1, 9]),
+                                        predict([1, 0, "12:00:00", distance, 1, 5]),
                                     builder: (context, snapshot) {
                                       if (snapshot.hasData) {
                                         // double distance =
@@ -325,8 +328,11 @@ class _FindmetroTestState extends State<FindmetroTest> {
                                           ),
                                         );
                                       } else {
-                                        return Center(
-                                          child: CircularProgressIndicator(),
+                                        return Container(
+                                          margin: EdgeInsets.only(bottom: 50),
+                                          child: Center(
+                                            child: CircularProgressIndicator(),
+                                          ),
                                         );
                                       }
                                     },

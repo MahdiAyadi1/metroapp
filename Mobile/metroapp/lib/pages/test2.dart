@@ -14,7 +14,7 @@ Future<int> predict(List input) async {
   final inputJsonString = jsonEncode(inputJson);
 
   // Effectuer la demande POST vers l'API Python
-  final response = await http.post(Uri.parse('https://timemetroprediction.onrender.com/predict'),
+  final response = await http.post(Uri.parse('https://timepredictionmetro2.onrender.com/predict'),
       body: inputJsonString,
       headers: {'Content-Type': 'application/json'});
 

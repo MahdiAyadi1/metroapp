@@ -25,7 +25,7 @@ class InputWelcome extends StatelessWidget {
         color: MyVariables.backgroundColor,
         borderRadius: BorderRadius.circular(66),
       ),
-      width: 352,
+      width: 355,
       padding: EdgeInsets.symmetric(horizontal: 16),
       child: DropdownButton(
         

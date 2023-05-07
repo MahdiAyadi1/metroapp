@@ -26,17 +26,17 @@ class FindMetroCard extends StatelessWidget {
       child: ListTile(
         contentPadding: EdgeInsets.fromLTRB(15, 35, 15, 35),
         title: Text(
-          "Metro $idMetro",
-          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+          "Métro $idMetro",
+          style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
         ),
         trailing: Text("Arrive dans $temps minutes",
             style: TextStyle(
-              fontSize: 19,
+              fontSize: 17,
               fontWeight: FontWeight.w400,
             )),
         subtitle: Text(
-          "Direction: $direction",
-          style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold,color: MyVariables.mainColor),
+          "Direction:             $direction",
+          style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold,color: MyVariables.mainColor),
         ),
       ),
     );

@@ -30,10 +30,11 @@ class _ChauffeurProfileDrawerState extends State<ChauffeurProfileDrawer> {
             decoration: BoxDecoration(color: MyVariables.secondColor),
             currentAccountPicture: CircleAvatar(
               backgroundColor: MyVariables.backgroundColor,
-    child: Icon(
-    Icons.person,
-    size: 50.0, // taille de l'icône
-  ),
+    child: Text("${widget.chauffeurMap["name"][0]}",style: TextStyle(fontSize: 35,fontFamily: MyVariables.titleFont))
+  //   Icon(
+  //   Icons.person,
+  //   size: 50.0, // taille de l'icône
+  // ),
             ),
             accountName: Text(
               "${widget.chauffeurMap["name"]} ${widget.chauffeurMap["lastName"]}",
