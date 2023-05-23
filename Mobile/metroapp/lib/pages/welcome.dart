@@ -5,11 +5,10 @@ import 'package:metroapp/components/button.dart';
 import 'package:metroapp/components/welcomePage/inputWelcome.dart';
 import 'package:metroapp/components/myvariables.dart';
 import '../components/appbar.dart';
-import '../components/welcomePage/drawer_welcome.dart';
+// import '../components/welcomePage/drawer_welcome.dart';
 import '../components/welcomePage/myBoxDecoration.dart';
 import '../database/bdd.dart';
-import 'findMetroTest.dart';
-import 'find_metro_UsingState.dart';
+import 'findMetro.dart';
 // import 'package:flutter_icons/flutter_icons.dart';
 
 class Welcome extends StatefulWidget {
@@ -131,24 +130,6 @@ class _WelcomeState extends State<Welcome> {
                           });
                         },
                       ),
-                      // InputWelcome(
-                      //   selected: _selectStationArrive,
-                      //   hintText: Text("Choisisser la station de d'arrivée "),
-                      //   list: (stationsFiltred.isEmpty
-                      //           ? <String>[]
-                      //           : stationsFiltred.sublist(1, stationsFiltred.length))
-                      //       .map<DropdownMenuItem<String>>((String value) {
-                      //     return DropdownMenuItem<String>(
-                      //       value: value,
-                      //       child: Text(value,style: TextStyle(fontSize: 20)),
-                      //     );
-                      //   }).toList(),
-                      //   onChange: (value) {
-                      //     setState(() {
-                      //       _selectStationArrive = value.toString();
-                      //     });
-                      //   },
-                      // ),
                     ],
                   ),
                 ),
@@ -164,7 +145,7 @@ class _WelcomeState extends State<Welcome> {
                         // Navigator.pushNamed(context, '/test');
                         Navigator.of(context).push(
                           MaterialPageRoute(builder: (context){
-                            return FindmetroTest(selectLigne: selectLigne,selectStationDepart: selectStationDepart,stationsFiltredMap: stationsFiltredMap,);
+                            return Findmetro(selectLigne: selectLigne,selectStationDepart: selectStationDepart,stationsFiltredMap: stationsFiltredMap,);
                           })
                         );
                   },

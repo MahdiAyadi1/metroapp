@@ -4,30 +4,27 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:metroapp/components/myvariables.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:metroapp/pages/test2.dart';
+import 'package:metroapp/pages/prediction.dart';
 import '../components/appbar.dart';
 import '../components/FindMetroCard.dart';
-import 'package:intl/intl.dart';
 
-class FindmetroTest2 extends StatefulWidget {
+class Findmetro extends StatefulWidget {
   final String? selectLigne;
   final String? selectStationDepart;
   final List<Map> stationsFiltredMap;
-  const FindmetroTest2({
+  const Findmetro({
     required this.selectLigne,
     required this.selectStationDepart,
     required this.stationsFiltredMap,
     Key? key,
   }) : super(key: key);
-  // selectLigne = l;
-  // selectStationDepart = s;
-  // stationsFiltredMap = liste;
+
 
   @override
-  State<FindmetroTest2> createState() => _FindmetroTest2State();
+  State<Findmetro> createState() => _FindmetroState();
 }
 
-class _FindmetroTest2State extends State<FindmetroTest2> {
+class _FindmetroState extends State<Findmetro> {
   Position? _position = Position(
       latitude: 0.0,
       longitude: 0.0,
@@ -88,7 +85,7 @@ class _FindmetroTest2State extends State<FindmetroTest2> {
     } else {
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.best);
-          print("localisation avec position: $position");
+      print("localisation avec position: $position");
       _position = position;
     }
     print("localisation: $_position");
@@ -169,26 +166,18 @@ class _FindmetroTest2State extends State<FindmetroTest2> {
     print("MetroMouvementListForTerminus====$MetroMouvementListForTerminus");
   }
 
-  Future<double> prediction(List l) {
-    if(l[0] == 1) {
-      return predict(l) ;
-    } else {
-      return getPositionAndDistance(0, 0);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     // print("localisation: $_position");
     // print(widget.selectStationDepart);
     // print(widget.selectLigne);
-    // print("=========================================================================${widget.stationsFiltredMap}");
+    // print("===${widget.stationsFiltredMap}");
 //     print(
 // "==================================BEGIN RENDER==========================================================");
     // print("MetroMouvementList From Bdd : $MetroMouvementList");
     return SafeArea(
       child: Scaffold(
-        appBar: MyAppBar(text: "Find metro Page"),
+        appBar: MyAppBar(text: "Trouver votre métro"),
         body: Column(
           children: [
             FutureBuilder<double>(
@@ -203,7 +192,7 @@ class _FindmetroTest2State extends State<FindmetroTest2> {
                     title: Text(
                       "Votre station : $plusProcheStationName",
                       style: TextStyle(
-                        fontSize: 24,
+                        fontSize: 22.5,
                         fontWeight: FontWeight.w400,
                         color: MyVariables.secondColor,
                       ),
@@ -242,90 +231,96 @@ class _FindmetroTest2State extends State<FindmetroTest2> {
             ),
             // Text("data"),
             FutureBuilder<double>(
-                // future: getPositionAndDistance(0, 0),
-                // future: widget.selectLigne == 'Ligne 1' ? predict([1,0,"12:00:00",3951,1,9]) : getPositionAndDistance(0, 0),
-                future: prediction([1,0,"12:00:00",3951,1,9]),
-                // print("${selectLigne}");
-                // print("${DateTime.now().weekday}");
-                // print("${DateFormat('HH:mm:ss').format(DateTime.now())}");
+                future: getPositionAndDistance(0, 0),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return Expanded(
-                      child: isLoading
-                          ? Center(
-                              child: CircularProgressIndicator(),
-                            )
-                          : ListView.builder(
+                      child: ListView.builder(
                               itemCount: MetroMouvementListForBarcelone.length +
                                   MetroMouvementListForTerminus.length,
                               itemBuilder: (BuildContext context, int index) {
                                 if (index < MetroMouvementListForBarcelone.length) {
-                                  double distance = Geolocator.distanceBetween(
-                                    MetroMouvementListForBarcelone[index]
-                                        ['location'][0],
-                                    MetroMouvementListForBarcelone[index]
-                                        ['location'][1],
-                                    stationDepart['coordinates'][0],
-                                    stationDepart['coordinates'][1],
-                                  );
-                                  // print("distance ========== $distance");
-                                  return Column(
-                                    children: [
-                                      // Text("Direction Centre Ville"),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 4.0),
-                                        child: FindMetroCard(
-                                          idMetro:
-                                              MetroMouvementListForBarcelone[
-                                                  index]['id_metro'],
-                                          // temps: DistanceToTime(distance, 11.0),
-                                          temps: snapshot.data!.round(),
-                                          // temps: widget.selectLigne == 'Ligne 1' ? predict([1,2]) : DistanceToTime(distance, 11.0),
-                                          direction: "Centre Ville",
-                                        ),
-                                      ),
-                                    ],
+                                  double distance =
+                                            Geolocator.distanceBetween(
+                                          MetroMouvementListForBarcelone[index]
+                                              ['location'][0],
+                                          MetroMouvementListForBarcelone[index]
+                                              ['location'][1],
+                                          stationDepart['coordinates'][0],
+                                          stationDepart['coordinates'][1],
+                                        );
+                                      print("distance======== $distance");
+                                  return FutureBuilder<int>(
+                                    future:
+                                        predict([1, 0, "12:00:00", distance, 1, 5]),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.hasData) {
+                                        return Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 4.0),
+                                          child: FindMetroCard(
+                                            idMetro:
+                                                MetroMouvementListForBarcelone[
+                                                    index]['id_metro'],
+                                            temps: snapshot.data!,
+                                            direction: "Centre Ville",
+                                          ),
+                                        );
+                                      } else {
+                                        return Container(
+                                          margin:EdgeInsets.only(bottom: 50),
+                                          child: Center(
+                                            child: CircularProgressIndicator(),
+                                          ),
+                                        );
+                                      }
+                                    },
                                   );
                                 } else {
                                   int newIndex = index -
                                       MetroMouvementListForBarcelone.length;
-                                  double distance = Geolocator.distanceBetween(
-                                    MetroMouvementListForTerminus[newIndex]
-                                        ['location'][0],
-                                    MetroMouvementListForTerminus[newIndex]
-                                        ['location'][1],
-                                    stationDepart['coordinates'][0],
-                                    stationDepart['coordinates'][1],
-                                  );
-                                  // print("distance ========== $distance");
-                                  return Column(
-                                    children: [
-                                      // Text("Direction Terminus ",style: TextStyle(backgroundColor: Colors.red)),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 4.0),
-                                        child: FindMetroCard(
-                                          idMetro:
-                                              MetroMouvementListForTerminus[
-                                                  newIndex]['id_metro'],
-                                          temps: DistanceToTime(distance, 11.0),
-                                          direction: "Terminus",
-                                        ),
-                                      ),
-                                    ],
+                                      double distance =
+                                            Geolocator.distanceBetween(
+                                          MetroMouvementListForTerminus[
+                                              newIndex]['location'][0],
+                                          MetroMouvementListForTerminus[
+                                              newIndex]['location'][1],
+                                          stationDepart['coordinates'][0],
+                                          stationDepart['coordinates'][1],
+                                        );
+                                        // print("distance ============================= $distance");
+                                  return FutureBuilder<int>(
+                                    future:
+                                        predict([1, 0, "12:00:00", distance, 1, 5]),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.hasData) {
+                                        return Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 4.0),
+                                          child: FindMetroCard(
+                                            idMetro:
+                                                MetroMouvementListForTerminus[
+                                                    newIndex]['id_metro'],
+                                            temps: snapshot.data!,
+                                            direction: "Terminus",
+                                          ),
+                                        );
+                                      } else {
+                                        return Container(
+                                          margin: EdgeInsets.only(bottom: 50),
+                                          child: Center(
+                                            child: CircularProgressIndicator(),
+                                          ),
+                                        );
+                                      }
+                                    },
                                   );
                                 }
                               },
                             ),
                     );
                   } else {
-                    return Padding(
-                      padding: const EdgeInsets.only(top: 100),
-                      child: Center(
-                                child: CircularProgressIndicator(),
-                              ),
-                    );
+                    return Text("");
                   }
                 }),
           ],
